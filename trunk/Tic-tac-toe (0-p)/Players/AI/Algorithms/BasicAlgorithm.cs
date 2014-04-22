@@ -56,20 +56,20 @@ namespace TicTacToe.AI
             // Start by analyzing board state to identify what wins that are possible
             foreach (Cell cell in grid)
             {
-                if (cell.MarkType.Equals(Mark.Cross))
+                if (cell.Mark.Equals(Mark.Cross))
                 {
                     horizontalWin.RemoveAll(n => n.Equals(cell.Position.Y));
                     verticalWin.RemoveAll(n => n.Equals(cell.Position.X));
 
                     //If opponent has his marker in the middle then all diagonal wins are impossible
-                    if (cell.Position.Equals(middle) && cell.MarkType.Equals(Mark.Cross))
+                    if (cell.Position.Equals(middle) && cell.Mark.Equals(Mark.Cross))
                     {
                         diagonalWin = false;
                         diagonalWin2 = false;
 
                     }
                     // For other cells different rules apply, as there are 3 horizontal and diagonal wins each
-                    else if (cell.MarkType.Equals(Mark.Cross))
+                    else if (cell.Mark.Equals(Mark.Cross))
                     {
                         if (corners.Contains(cell.Position)) // Check if diagonal win is possible
                         {
@@ -92,13 +92,13 @@ namespace TicTacToe.AI
             }
 
             //Now calculate which type of win to prioritize, starting by checking where we already have marks placed
-            var friendlyCells = grid.Where(cell => cell.MarkType.Equals(player.marker));
+            var friendlyCells = grid.Where(cell => cell.Mark.Equals(player.marker));
 
             //If we don't have any friendly marks placed then we will have to base our decision on any row where a win is possible
             if (friendlyCells.Length < 1)
             {
                 //Get all empty rows
-                var options = grid.GetEmptyRows();
+                var options = grid.GetEmptyLines();
                 var rnd = new Random();
 
                 //Since these are all equally viable options just randomize our choice between them all with priority 1.
@@ -125,7 +125,7 @@ namespace TicTacToe.AI
                         options.Add(Tuple.Create((horizontalNeighbours.Length == 2) ? 3 : 1, grid.Find(
                             (entry) => 
                                 entry.Position.Y.Equals(cell.Position.Y) && 
-                                entry.MarkType.Equals(Mark.Empty))
+                                entry.Mark.Equals(Mark.Empty))
                                 .Position)); 
                     }
 
@@ -135,7 +135,7 @@ namespace TicTacToe.AI
                         options.Add(Tuple.Create((verticalNeighbours.Length == 2) ? 3 : 1, grid.Find(
                             (entry) =>
                                 entry.Position.X.Equals(cell.Position.X) &&
-                                entry.MarkType.Equals(Mark.Empty))
+                                entry.Mark.Equals(Mark.Empty))
                                 .Position)); 
                     }
 
@@ -143,23 +143,23 @@ namespace TicTacToe.AI
                     {
                         options.Add(Tuple.Create((diagonalNeighbours.Length == 2) ? 3 : 1, grid.Find(
                             (entry) => 
-                            corners.Any(pos => pos.Equals(entry.Position)) && entry.MarkType.Equals(Mark.Empty) || 
-                            entry.Position.Equals(middle) && entry.MarkType.Equals(Mark.Empty)).Position));
+                            corners.Any(pos => pos.Equals(entry.Position)) && entry.Mark.Equals(Mark.Empty) || 
+                            entry.Position.Equals(middle) && entry.Mark.Equals(Mark.Empty)).Position));
                     }
 
                     if (diagonalWin2 && corners2.Any(pos => pos.Equals(cell.Position)) || diagonalWin2 && cell.Position.Equals(middle)) 
                     {
                         options.Add(Tuple.Create((diagonalNeighbours2.Length == 2) ? 3 : 1, grid.Find(
                             (entry) =>
-                            corners2.Any(pos => pos.Equals(entry.Position)) && entry.MarkType.Equals(Mark.Empty) ||
-                            entry.Position.Equals(middle) && entry.MarkType.Equals(Mark.Empty)).Position));
+                            corners2.Any(pos => pos.Equals(entry.Position)) && entry.Mark.Equals(Mark.Empty) ||
+                            entry.Position.Equals(middle) && entry.Mark.Equals(Mark.Empty)).Position));
                     }
                 }
 
                 //If it doesn't find any neighbouring cells that can win just place marker on an empty valid space
                 if (options.Count < 1)
                 {
-                    var emptyRows = grid.GetEmptyRows();
+                    var emptyRows = grid.GetEmptyLines();
                     var rnd = new Random();
 
                     //Since these are all equally viable options just randomize our choice between them all with priority 1.
@@ -199,7 +199,7 @@ namespace TicTacToe.AI
 
             foreach (var cell in grid)
             {
-                if (cell.MarkType.Equals(Mark.Cross))
+                if (cell.Mark.Equals(Mark.Cross))
                 {
                     unfriendlyCells.Add(Tuple.Create(1, cell)); //Set these to priority 1 by default
                 }
