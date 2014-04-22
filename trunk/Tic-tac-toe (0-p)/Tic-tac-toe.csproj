@@ -55,7 +55,6 @@
     <Compile Include="Players\AI\GameState.cs" />
     <Compile Include="Players\AI\GameStateRepo.cs" />
     <Compile Include="Players\AI\IDecisionAlgorithm.cs" />
-    <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>

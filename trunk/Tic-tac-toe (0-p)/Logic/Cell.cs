@@ -3,7 +3,7 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    enum Mark { Empty, Cross, Nought };
+    enum Mark { Empty, Cross, Nought }
 
     class Cell
     {
@@ -15,9 +15,12 @@ namespace TicTacToe
                                              * default values in auto-implemented properties. */
         private IGameViewer viewer;
         public static event CellChangedHandler OnCellChanged; 
-        public readonly Position position;
+        public readonly Position Position;
         public Mark MarkType { 
-            get { return markType; } 
+            get 
+            { 
+                return markType; 
+            } 
             set 
             {
                 // Only allow changes to cells without a mark 
@@ -41,7 +44,7 @@ namespace TicTacToe
         public Cell(IGameViewer viewer, Position coords)
         {
             this.viewer = viewer;
-            this.position = coords;
+            this.Position = coords;
             viewer.DisplayCell(this);
         }
 

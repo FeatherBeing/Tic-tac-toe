@@ -36,14 +36,14 @@ namespace TicTacToe
         private void ShowCompletionDialog(OutcomeType outcome)
         {
             long winner = (long)outcome + 1;
-            string WonText = "Player " + winner + " won!";
+            string wonText = "Player " + winner + " won!";
 
             if (outcome.Equals(OutcomeType.Draw))
             { 
-                WonText = "The game ended in a draw!";
+                wonText = "The game ended in a draw!";
             }
 
-            DialogResult dialogResult = MessageBox.Show("Play again?", WonText, MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Play again?", wonText, MessageBoxButtons.YesNo);
             
             if (dialogResult == DialogResult.Yes)
             {
@@ -56,44 +56,44 @@ namespace TicTacToe
 
         void IGameViewer.DisplayCell(Cell cell)
         {
-            vGrid[cell.position.X, cell.position.Y] = new VisualCell() 
+            vGrid[cell.Position.X, cell.Position.Y] = new VisualCell() 
             {
                 AutoSize = true,
-                Location = new Point(cell.position.X * 110, cell.position.Y * 110),
+                Location = new Point(cell.Position.X * 110, cell.Position.Y * 110),
                 Size = new Size(124, 124),
                 Font = new Font(Font.FontFamily, 40),
-                CellPos = new Position(cell.position.X, cell.position.Y)
+                CellPos = new Position(cell.Position.X, cell.Position.Y)
             };
 
-            vGrid[cell.position.X, cell.position.Y].Click += new EventHandler(
+            vGrid[cell.Position.X, cell.Position.Y].Click += new EventHandler(
                         (a, b) =>
                         {
                             var pos = new Position((a as VisualCell).CellPos.X, (a as VisualCell).CellPos.Y);
-                            var player = Array.Find((presenter as GameController).players, p => p.marker.Equals(Mark.Cross));
+                            var player = Array.Find((presenter as GameController).Players, p => p.marker.Equals(Mark.Cross));
                             presenter.PlayerChoice(player, pos); // Viewer -> Presenter, when btn is clicked call PlayerChoice();
                         });
 
-            Controls.Add(vGrid[cell.position.X, cell.position.Y]);
+            Controls.Add(vGrid[cell.Position.X, cell.Position.Y]);
         }
 
         void IGameViewer.CellChanged(Cell cell) 
         {
             //For thread safety since AIPlayer will make cross-thread calls
-            if (vGrid[cell.position.X, cell.position.Y].InvokeRequired) 
+            if (vGrid[cell.Position.X, cell.Position.Y].InvokeRequired) 
             { 
-                vGrid[cell.position.X, cell.position.Y].Invoke(new MethodInvoker(() => (this as IGameViewer).CellChanged(cell)));
+                vGrid[cell.Position.X, cell.Position.Y].Invoke(new MethodInvoker(() => (this as IGameViewer).CellChanged(cell)));
             } 
             else 
             {
-                vGrid[cell.position.X, cell.position.Y].Text = (cell.MarkType.Equals(Mark.Cross)) ? "X" : "O";
-                vGrid[cell.position.X, cell.position.Y].Enabled = false;
+                vGrid[cell.Position.X, cell.Position.Y].Text = (cell.MarkType.Equals(Mark.Cross)) ? "X" : "O";
+                vGrid[cell.Position.X, cell.Position.Y].Enabled = false;
             }
         }
 
         void IGameViewer.ResetCell(Cell cell) 
         {
-            vGrid[cell.position.X, cell.position.Y].Text = String.Empty;
-            vGrid[cell.position.X, cell.position.Y].Enabled = true; 
+            vGrid[cell.Position.X, cell.Position.Y].Text = string.Empty;
+            vGrid[cell.Position.X, cell.Position.Y].Enabled = true; 
         }
 
         #endregion 

@@ -16,7 +16,34 @@ namespace TicTacToe
         
         #region Properties & Fields
         
-        public Cell[,] cells { get; set; }
+        public Cell[,] Cells { get; set; }
+        private Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
+        public Cell this[int index, int index2]
+        {
+            get
+            {
+                if (index <= cells.GetUpperBound(0) && index >= cells.GetLowerBound(0) && index2 <= cells.GetUpperBound(1) && index2 >= cells.GetLowerBound(1))
+                {
+                    return cells[index, index2];
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
+            }
+            set 
+            {
+                if (index <= cells.GetUpperBound(0) && index >= cells.GetLowerBound(0) && index2 <= cells.GetUpperBound(1) && index2 >= cells.GetLowerBound(1))
+                {
+                    cells[index, index2] = value;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
         public OutcomeType Outcome { get; private set; }
         
         #endregion
@@ -26,13 +53,12 @@ namespace TicTacToe
         public Grid(IGameViewer viewer)
         {
             Outcome = OutcomeType.None;
-            cells = new Cell[MAX_CELLS, MAX_CELLS];
 
             for (int x = 0; x < MAX_CELLS; x++)
             {
                 for (int y = 0; y < MAX_CELLS; y++)
                 {
-                    cells[x, y] = new Cell(viewer, new Position(x, y));
+                    this[x, y] = new Cell(viewer, new Position(x, y));
                 }
             }
         }
@@ -51,7 +77,7 @@ namespace TicTacToe
             //If the cell is at the corner or the middle we have to check for diagonal wins too
             if (corners.Any(e => e.Equals(coords)) || middle.Equals(coords)) { checkDiagonals = true; }
 
-            if (player.PlayerWon(cells[coords.X, coords.Y], this, checkDiagonals))
+            if (player.PlayerWon(this[coords.X, coords.Y], this, checkDiagonals))
             {
                 switch (player.marker)
                 {
@@ -67,7 +93,7 @@ namespace TicTacToe
             }
 
             //Now we can check for draws
-            if (cells.GetEmptyCells().Length == 0)
+            if (this.GetEmptyCells().Length == 0)
             {
                 Outcome = OutcomeType.Draw;
                 return true;
@@ -83,18 +109,150 @@ namespace TicTacToe
 
             for (int i = 0; i < this.cells.GetLength(0); i++)
             {
-                var rows = new List<Cell[]>() { cells[i,i].HorizontalRelatives(this), cells[i,i].VerticalRelatives(this) };
+                var rows = new List<Cell[]>() { this.HorizontalRelatives(cells[i, i]), this.VerticalRelatives(cells[i, i]) };
 
                 if (i == 1)
                 {
-                    rows.Add(cells[i, i].DiagonalRelatives(this));
-                    rows.Add(cells[i, i].DiagonalRelatives2(this));
+                    rows.Add(this.DiagonalRelatives(cells[i, i]));
+                    rows.Add(this.DiagonalRelatives2(cells[i, i]));
                 }
 
                 selection.AddRange(rows.FindAll(array => array.Length.Equals(3)));
             }
 
             return selection;
+        }
+
+        public Cell[] GetEmptyCells()
+        {
+            List<Cell> emptyCells = new List<Cell>();
+
+            foreach (Cell cell in cells)
+            {
+                if (cell.MarkType == Mark.Empty)
+                {
+                    emptyCells.Add(cell);
+                }
+            }
+
+            return emptyCells.ToArray();
+        }
+
+        public Position IndexOf(Cell cell)
+        {
+            for (int x = 0; x < cells.GetLength(0); x++)
+            {
+                for (int y = 0; y < cells.GetLength(1); y++)
+                {
+                    if (cells[x, y].Equals(cell))
+                    {
+                        return new Position(x, y);
+                    }
+                }
+            }
+
+            //If code reaches this point, then it didn't find anything, return -1
+            return new Position(-1, -1);
+        }
+
+        public Cell[] DiagonalRelatives(Cell cell)
+        {
+            var relatives = new List<Cell>();
+
+            for (int x = 0; x < 3; x++)
+            {
+                if (cells[x, x].MarkType.Equals(cell.MarkType)) 
+                { 
+                    relatives.Add(cells[x, x]); 
+                }
+            }
+
+            return relatives.ToArray();
+        }
+
+        public Cell[] DiagonalRelatives2(Cell cell)
+        {
+            var relatives = new List<Cell>();
+
+            for (int x = 0; x < 3; x++)
+            {
+                if (cells[x, 2 - x].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[x, 2 - x]); }
+            }
+
+            return relatives.ToArray();
+        }
+
+        public Cell[] HorizontalRelatives(Cell cell)
+        {
+            var relatives = new List<Cell>();
+            int rowNum = this.IndexOf(cell).Y;
+
+            for (int x = 0; x < 3; x++)
+            {
+                //Find row of cell
+                if (cells[x, rowNum].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[x, rowNum]); }
+            }
+
+            return relatives.ToArray();
+        }
+
+        public Cell[] VerticalRelatives(Cell cell)
+        {
+            var relatives = new List<Cell>();
+            int colNum = this.IndexOf(cell).X;
+
+            for (int y = 0; y < 3; y++)
+            {
+                //Find row of cell
+                if (cells[colNum, y].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[colNum, y]); }
+            }
+
+            return relatives.ToArray();
+        }
+
+        public Cell[] Where(Predicate<Cell> cellSelector)
+        {
+            var results = new List<Cell>();
+
+            foreach (var cell in cells)
+            {
+                if (cellSelector.Invoke(cell))
+                {
+                    results.Add(cell);
+                }
+            }
+
+            return results.ToArray();
+        }
+
+        public Cell Find(Predicate<Cell> cellSelector)
+        {
+            foreach (var cell in cells)
+            {
+                if (cellSelector.Invoke(cell))
+                {
+                    return cell;
+                }
+            }
+
+            //If it doesn't find any cell that matches predicate conditions then return null
+            return null;
+        }
+
+        public void Reset()
+        {
+            foreach (Cell cell in cells)
+            {
+                cell.Reset();
+            }
+        }
+
+        public IEnumerator<Cell> GetEnumerator()
+        {
+            foreach (Cell cell in cells)
+            {
+                yield return cell;
+            }
         }
 
        #endregion

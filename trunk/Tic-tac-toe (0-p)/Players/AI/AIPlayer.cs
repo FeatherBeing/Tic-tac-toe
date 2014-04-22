@@ -39,7 +39,7 @@ namespace TicTacToe.AI
                 return;
             }
 
-            var decision = decisionMaker.GetDecision(presenter.grid, this);
+            var decision = decisionMaker.GetDecision(presenter.Grid, this);
 
             Turn++;
             Task.Delay(250).Wait(); // This is just a cosmetic thing, so it'll look like the AI needs some "thinking time"

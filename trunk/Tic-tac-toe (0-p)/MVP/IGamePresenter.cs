@@ -13,7 +13,7 @@ namespace TicTacToe.MVP
     /// </summary>
     interface IGamePresenter
     {
-        Grid grid { get; }
+        Grid Grid { get; }
         void RestartGame();
         void PlayerChoice(Player player, Position coords);
         event GameEndHandler OnGameEnd;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TicTacToe.MVP;
 using TicTacToe.AI;
+using TicTacToe.MVP;
 
 namespace TicTacToe
 {
@@ -13,10 +13,10 @@ namespace TicTacToe
     {
         #region Fields & Properties
 
-        public readonly Player[] players = new Player[2];
+        public readonly Player[] Players = new Player[2];
         public event GameEndHandler OnGameEnd;
         public event PlayedEventHandler OnPlayed;
-        public Grid grid { get; private set; }
+        public Grid Grid { get; private set; }
 
         #endregion        
 
@@ -24,9 +24,9 @@ namespace TicTacToe
 
         public GameController(IGameViewer viewer) 
         { 
-            grid = new Grid(viewer);
-            players[0] = new Player(Mark.Cross); // Always set to human 
-            players[1] = new AIPlayer(Mark.Nought, this); // Set to AI            
+            Grid = new Grid(viewer);
+            Players[0] = new Player(Mark.Cross); // Always set to human 
+            Players[1] = new AIPlayer(Mark.Nought, this); // Set to AI            
         }
 
         #endregion
@@ -36,29 +36,26 @@ namespace TicTacToe
         void IGamePresenter.PlayerChoice(Player player, Position position) 
         {
             //This is so the AI can start playing again when a new round is started
-            (players[1] as AIPlayer).DisallowPlay = false;
+            (Players[1] as AIPlayer).DisallowPlay = false;
 
             // Presenter -> Model, place marker at coords
-            grid.cells[position.X, position.Y].MarkType = player.marker;
+            Grid[position.X, position.Y].MarkType = player.marker;
 
             // Model -> Presenter, if grid reaches an outcome end the game
-            if(grid.CheckOutcome(position, player)) { OnGameEnd(grid.Outcome); }
+            if (Grid.CheckOutcome(position, player)) { OnGameEnd(Grid.Outcome); }
 
             //Raise OnPlayed Event
-            OnPlayed(grid.cells[position.X, position.Y], player);  
+            OnPlayed(Grid[position.X, position.Y], player);  
         }
 
         void IGamePresenter.RestartGame() 
         {
-            // Reset each cell to it's original state
-            foreach (Cell cell in grid.cells)
-            {
-                cell.Reset();
-            }
+            // Reset grid
+            Grid.Reset();
 
             // Reset AIPlayer turn counter
-            (players[1] as AIPlayer).Turn = 0;
-            (players[1] as AIPlayer).Reset();
+            (Players[1] as AIPlayer).Turn = 0;
+            (Players[1] as AIPlayer).Reset();
         }
 
         #endregion

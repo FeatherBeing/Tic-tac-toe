@@ -17,10 +17,10 @@ namespace TicTacToe
 
         #region Constructors
 
-        public Position(int X, int Y) 
+        public Position(int x, int y) 
         {
-            this.X = X;
-            this.Y = Y;
+            this.X = x;
+            this.Y = y;
         }
 
         #endregion
