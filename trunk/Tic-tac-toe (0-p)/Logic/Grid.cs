@@ -19,26 +19,11 @@ namespace TicTacToe
         {
             get
             {
-                if (index <= cells.GetUpperBound(0) && index >= cells.GetLowerBound(0) && index2 <= cells.GetUpperBound(1) && index2 >= cells.GetLowerBound(1))
-                {
-                    return cells[index, index2];
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-
+                return cells[index, index2];
             }
-            set 
+            set
             {
-                if (index <= cells.GetUpperBound(0) && index >= cells.GetLowerBound(0) && index2 <= cells.GetUpperBound(1) && index2 >= cells.GetLowerBound(1))
-                {
-                    cells[index, index2] = value;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+                cells[index, index2] = value;
             }
         }
         public Outcome Outcome { get; private set; }        
