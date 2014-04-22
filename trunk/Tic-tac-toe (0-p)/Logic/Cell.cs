@@ -16,7 +16,7 @@ namespace TicTacToe
         private IGameViewer viewer;
         public static event CellChangedHandler OnCellChanged; 
         public readonly Position Position;
-        public Mark MarkType { 
+        public Mark Mark { 
             get 
             { 
                 return markType; 

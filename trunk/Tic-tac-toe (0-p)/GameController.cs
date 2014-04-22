@@ -39,7 +39,7 @@ namespace TicTacToe
             (Players[1] as AIPlayer).DisallowPlay = false;
 
             // Presenter -> Model, place marker at coords
-            Grid[position.X, position.Y].MarkType = player.marker;
+            Grid[position.X, position.Y].Mark = player.marker;
 
             // Model -> Presenter, if grid reaches an outcome end the game
             if (Grid.CheckOutcome(position, player)) { OnGameEnd(Grid.Outcome); }

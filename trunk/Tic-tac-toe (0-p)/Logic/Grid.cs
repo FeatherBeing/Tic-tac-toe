@@ -103,7 +103,7 @@ namespace TicTacToe
             return false;
         }
 
-        public List<Cell[]> GetEmptyRows()
+        public List<Cell[]> GetEmptyLines()
         {
             var selection = new List<Cell[]>();
 
@@ -129,7 +129,7 @@ namespace TicTacToe
 
             foreach (Cell cell in cells)
             {
-                if (cell.MarkType == Mark.Empty)
+                if (cell.Mark == Mark.Empty)
                 {
                     emptyCells.Add(cell);
                 }
@@ -161,7 +161,7 @@ namespace TicTacToe
 
             for (int x = 0; x < 3; x++)
             {
-                if (cells[x, x].MarkType.Equals(cell.MarkType)) 
+                if (cells[x, x].Mark.Equals(cell.Mark)) 
                 { 
                     relatives.Add(cells[x, x]); 
                 }
@@ -176,7 +176,7 @@ namespace TicTacToe
 
             for (int x = 0; x < 3; x++)
             {
-                if (cells[x, 2 - x].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[x, 2 - x]); }
+                if (cells[x, 2 - x].Mark.Equals(cell.Mark)) { relatives.Add(cells[x, 2 - x]); }
             }
 
             return relatives.ToArray();
@@ -190,7 +190,7 @@ namespace TicTacToe
             for (int x = 0; x < 3; x++)
             {
                 //Find row of cell
-                if (cells[x, rowNum].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[x, rowNum]); }
+                if (cells[x, rowNum].Mark.Equals(cell.Mark)) { relatives.Add(cells[x, rowNum]); }
             }
 
             return relatives.ToArray();
@@ -204,7 +204,7 @@ namespace TicTacToe
             for (int y = 0; y < 3; y++)
             {
                 //Find row of cell
-                if (cells[colNum, y].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[colNum, y]); }
+                if (cells[colNum, y].Mark.Equals(cell.Mark)) { relatives.Add(cells[colNum, y]); }
             }
 
             return relatives.ToArray();

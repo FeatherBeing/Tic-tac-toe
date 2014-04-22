@@ -85,7 +85,7 @@ namespace TicTacToe
             } 
             else 
             {
-                vGrid[cell.Position.X, cell.Position.Y].Text = (cell.MarkType.Equals(Mark.Cross)) ? "X" : "O";
+                vGrid[cell.Position.X, cell.Position.Y].Text = (cell.Mark.Equals(Mark.Cross)) ? "X" : "O";
                 vGrid[cell.Position.X, cell.Position.Y].Enabled = false;
             }
         }
