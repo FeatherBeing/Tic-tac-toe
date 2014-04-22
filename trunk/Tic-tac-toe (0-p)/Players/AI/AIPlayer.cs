@@ -9,7 +9,7 @@ namespace TicTacToe.AI
     {
         private readonly IGamePresenter presenter;
         private readonly DecisionMaker decisionMaker;
-        public int Turn { get; set; }
+        public int Turn { get; set; } // We aren't using this right now but it's good for state-based AIs
         public bool DisallowPlay { get; set; }
 
         public AIPlayer(Mark marker, IGamePresenter presenter) : base(marker)
