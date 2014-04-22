@@ -7,29 +7,19 @@ namespace TicTacToe.AI
 {
     class AIPlayer : Player
     {
-        #region Fields & Properties
-
-        private IGamePresenter presenter;
-        private DecisionMaker decisionMaker;
+        private readonly IGamePresenter presenter;
+        private readonly DecisionMaker decisionMaker;
         public int Turn { get; set; }
         public bool DisallowPlay { get; set; }
-
-        #endregion
-
-        #region Constructors
 
         public AIPlayer(Mark marker, IGamePresenter presenter) : base(marker)
         {
             this.presenter = presenter;
             decisionMaker = new DecisionMaker();
             Turn = new int();
-            presenter.OnPlayed += DoTurn;
-            presenter.OnGameEnd += new GameEndHandler(x => DisallowPlay = true); // Disable play for AI after game has been won
+            presenter.Played += DoTurn;
+            presenter.GameEnd += new GameEndHandler(x => DisallowPlay = true); // Disable play for AI after game has been won
         }
-
-        #endregion
-
-        #region Instanced Methods
 
         private void DoTurn(Cell cell, Player player)
         {
@@ -48,9 +38,8 @@ namespace TicTacToe.AI
 
         public void Reset()
         {
+            Turn = 0;
             decisionMaker.Reset();
         }
-
-        #endregion
     }
 }

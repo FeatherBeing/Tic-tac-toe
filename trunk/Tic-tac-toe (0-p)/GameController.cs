@@ -6,32 +6,24 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    public delegate void GameEndHandler(OutcomeType outcome);
+    public delegate void GameEndHandler(Outcome outcome);
     internal delegate void PlayedEventHandler(Cell cell, Player player);
 
     class GameController : IGamePresenter 
     {
-        #region Fields & Properties
 
-        public readonly Player[] Players = new Player[2];
-        public event GameEndHandler OnGameEnd;
-        public event PlayedEventHandler OnPlayed;
+        public Player[] Players { get; private set; }
+        public event GameEndHandler GameEnd;
+        public event PlayedEventHandler Played;
         public Grid Grid { get; private set; }
-
-        #endregion        
-
-        #region Constructors
 
         public GameController(IGameViewer viewer) 
         { 
             Grid = new Grid(viewer);
+            Players = new Player[2];
             Players[0] = new Player(Mark.Cross); // Always set to human 
             Players[1] = new AIPlayer(Mark.Nought, this); // Set to AI            
         }
-
-        #endregion
-
-        #region Instanced Methods
 
         void IGamePresenter.PlayerChoice(Player player, Position position) 
         {
@@ -42,10 +34,13 @@ namespace TicTacToe
             Grid[position.X, position.Y].Mark = player.marker;
 
             // Model -> Presenter, if grid reaches an outcome end the game
-            if (Grid.CheckOutcome(position, player)) { OnGameEnd(Grid.Outcome); }
+            if (Grid.CheckOutcome(position, player)) 
+            { 
+                GameEnd(Grid.Outcome); 
+            }
 
-            //Raise OnPlayed Event
-            OnPlayed(Grid[position.X, position.Y], player);  
+            //Raise Played Event
+            Played(Grid[position.X, position.Y], player);  
         }
 
         void IGamePresenter.RestartGame() 
@@ -53,11 +48,8 @@ namespace TicTacToe
             // Reset grid
             Grid.Reset();
 
-            // Reset AIPlayer turn counter
-            (Players[1] as AIPlayer).Turn = 0;
+            // Reset AIPlayer
             (Players[1] as AIPlayer).Reset();
         }
-
-        #endregion
     }
 }

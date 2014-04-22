@@ -9,8 +9,6 @@ namespace TicTacToe
     {
         public delegate void CellChangedHandler(Cell cell);
 
-        #region Properties & Fields
-
         private Mark markType = Mark.Empty; /* Have to use old way of defining properties here unfortunately due to lack of support for,
                                              * default values in auto-implemented properties. */
         private IGameViewer viewer;
@@ -37,10 +35,6 @@ namespace TicTacToe
             } 
         }
 
-        #endregion
-
-        #region Constructors
-
         public Cell(IGameViewer viewer, Position coords)
         {
             this.viewer = viewer;
@@ -48,16 +42,10 @@ namespace TicTacToe
             viewer.DisplayCell(this);
         }
 
-        #endregion
-
-        #region Instanced Methods
-
         public void Reset() //This method is necessary because we can't use the property to
         {
             markType = Mark.Empty;
             viewer.ResetCell(this);
         }
-
-        #endregion
     }
 }

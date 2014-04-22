@@ -5,9 +5,7 @@ namespace TicTacToe
 {
     class VisualCell : Button
     {
-        #region Fields & Properties
-
-        public Position CellPos { get; set; }
+        public Position CellPosition { get; set; }
 
         protected override bool ShowFocusCues
         {
@@ -17,17 +15,10 @@ namespace TicTacToe
             }
         }
 
-        #endregion
-
-        #region Constructors
-
         public VisualCell(): base()
         {
-
             this.SetStyle(ControlStyles.Selectable, false);
         }
-
-        #endregion
     }
 }
    

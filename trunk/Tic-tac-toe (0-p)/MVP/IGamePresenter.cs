@@ -14,9 +14,10 @@ namespace TicTacToe.MVP
     interface IGamePresenter
     {
         Grid Grid { get; }
+        Player[] Players { get; }
         void RestartGame();
         void PlayerChoice(Player player, Position coords);
-        event GameEndHandler OnGameEnd;
-        event PlayedEventHandler OnPlayed;
+        event GameEndHandler GameEnd;
+        event PlayedEventHandler Played;
     }
 }

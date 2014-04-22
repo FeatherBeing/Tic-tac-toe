@@ -8,49 +8,35 @@ namespace TicTacToe
 {
     public partial class GameForm : Form, IGameViewer
     {
-        #region Fields & Properties
-
         private VisualCell[,] vGrid = new VisualCell[3, 3];
         private IGamePresenter presenter;
-
-        #endregion
-
-        #region Constructors
 
         public GameForm()
         {
             InitializeComponent();
         }
 
-        #endregion
-
-        #region Instanced Methods
-
         private void Game_Load(object sender, EventArgs e)
         {
             presenter = new GameController(this);
-            presenter.OnGameEnd += ShowCompletionDialog; // When IGamePresenter raises OnGameEnd event then the viewer is free to show completion dialog
+            presenter.GameEnd += ShowCompletionDialog; // When IGamePresenter raises GameEnd event then the viewer is free to show completion dialog
             Cell.OnCellChanged += (this as IGameViewer).CellChanged;
         }
 
-        private void ShowCompletionDialog(OutcomeType outcome)
+        private void ShowCompletionDialog(Outcome outcome)
         {
             long winner = (long)outcome + 1;
-            string wonText = "Player " + winner + " won!";
+            string outcomeText = (outcome.Equals(Outcome.Draw)) ? "The game ended in a draw!" : "Player " + winner + " won!";
 
-            if (outcome.Equals(OutcomeType.Draw))
-            { 
-                wonText = "The game ended in a draw!";
-            }
-
-            DialogResult dialogResult = MessageBox.Show("Play again?", wonText, MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Play again?", outcomeText, MessageBoxButtons.YesNo);
             
             if (dialogResult == DialogResult.Yes)
             {
               presenter.RestartGame(); // Viewer -> Presenter, restart the game
-            } else if (dialogResult == DialogResult.No)
+            } 
+            else if (dialogResult == DialogResult.No)
             {
-                //do something else
+                //do nothing..
             }
         }
 
@@ -62,15 +48,15 @@ namespace TicTacToe
                 Location = new Point(cell.Position.X * 110, cell.Position.Y * 110),
                 Size = new Size(124, 124),
                 Font = new Font(Font.FontFamily, 40),
-                CellPos = new Position(cell.Position.X, cell.Position.Y)
+                CellPosition = new Position(cell.Position.X, cell.Position.Y)
             };
 
             vGrid[cell.Position.X, cell.Position.Y].Click += new EventHandler(
                         (a, b) =>
                         {
-                            var pos = new Position((a as VisualCell).CellPos.X, (a as VisualCell).CellPos.Y);
-                            var player = Array.Find((presenter as GameController).Players, p => p.marker.Equals(Mark.Cross));
-                            presenter.PlayerChoice(player, pos); // Viewer -> Presenter, when btn is clicked call PlayerChoice();
+                            var position = new Position((a as VisualCell).CellPosition.X, (a as VisualCell).CellPosition.Y);
+                            var player = Array.Find(presenter.Players, p => p.marker.Equals(Mark.Cross));
+                            presenter.PlayerChoice(player, position); // Viewer -> Presenter, when btn is clicked call PlayerChoice();
                         });
 
             Controls.Add(vGrid[cell.Position.X, cell.Position.Y]);
@@ -94,8 +80,6 @@ namespace TicTacToe
         {
             vGrid[cell.Position.X, cell.Position.Y].Text = string.Empty;
             vGrid[cell.Position.X, cell.Position.Y].Enabled = true; 
-        }
-
-        #endregion 
+        } 
     }
 }

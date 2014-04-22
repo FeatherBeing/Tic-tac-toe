@@ -5,17 +5,14 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    public enum OutcomeType
+    public enum Outcome
     {
         None = -1, CrossWin, NoughtWin, Draw
     }
 
     class Grid
     {
-        const int MAX_CELLS = 3;
-        
-        #region Properties & Fields
-        
+        const int MAX_CELLS = 3;                
         public Cell[,] Cells { get; set; }
         private Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
         public Cell this[int index, int index2]
@@ -44,15 +41,11 @@ namespace TicTacToe
                 }
             }
         }
-        public OutcomeType Outcome { get; private set; }
-        
-        #endregion
-
-        #region Constructors
+        public Outcome Outcome { get; private set; }        
 
         public Grid(IGameViewer viewer)
         {
-            Outcome = OutcomeType.None;
+            Outcome = Outcome.None;
 
             for (int x = 0; x < MAX_CELLS; x++)
             {
@@ -62,10 +55,6 @@ namespace TicTacToe
                 }
             }
         }
-
-        #endregion
-
-        #region Instanced Methods
 
         public bool CheckOutcome(Position coords, Player player)
         {
@@ -82,10 +71,10 @@ namespace TicTacToe
                 switch (player.marker)
                 {
                     case Mark.Cross:
-                        Outcome = OutcomeType.CrossWin;
+                        Outcome = Outcome.CrossWin;
                         break;
                     case Mark.Nought:
-                        Outcome = OutcomeType.NoughtWin;
+                        Outcome = Outcome.NoughtWin;
                         break;
                 }
 
@@ -95,7 +84,7 @@ namespace TicTacToe
             //Now we can check for draws
             if (this.GetEmptyCells().Length == 0)
             {
-                Outcome = OutcomeType.Draw;
+                Outcome = Outcome.Draw;
                 return true;
             }
 
@@ -254,7 +243,5 @@ namespace TicTacToe
                 yield return cell;
             }
         }
-
-       #endregion
     }
 }

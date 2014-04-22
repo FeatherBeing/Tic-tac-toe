@@ -11,8 +11,6 @@ namespace TicTacToe.AI
     /// </summary>
     class BasicAlgorithm : IDecisionAlgorithm
     {
-        #region Fields & Properties
-
         private static Position[] corners = new Position[] { new Position(0, 0), new Position(2, 2) };
         private static Position[] corners2 = new Position[] { new Position(0, 2), new Position(2, 0) };
         private static Position middle = new Position(1, 1);
@@ -20,10 +18,6 @@ namespace TicTacToe.AI
         private List<int> verticalWin = new List<int>() { 0, 1, 2 };
         private bool diagonalWin = true;
         private bool diagonalWin2 = true;
-
-        #endregion
-
-        #region Instanced Methods
 
         Position IDecisionAlgorithm.Invoke(Grid grid, AIPlayer player) 
         {
@@ -260,7 +254,5 @@ namespace TicTacToe.AI
                 return new Decision(2, prioritizedOptions[new Random().Next(prioritizedOptions.Count)].Item2);
             }
         }
-
-        #endregion
     }
 }

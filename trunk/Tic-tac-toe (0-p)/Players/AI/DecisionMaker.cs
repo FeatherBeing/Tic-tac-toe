@@ -8,13 +8,7 @@ namespace TicTacToe.AI
 {
     class DecisionMaker
     {
-        #region Properties & Fields
-
         private IDecisionAlgorithm algorithm = new BasicAlgorithm(); 
-
-        #endregion
-
-        #region Instanced Methods
 
         public Position GetDecision(Grid grid, AIPlayer player) 
         {
@@ -25,7 +19,5 @@ namespace TicTacToe.AI
         {
             algorithm.Reset();
         }
-
-        #endregion
     }
 }
