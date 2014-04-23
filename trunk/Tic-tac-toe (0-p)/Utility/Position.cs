@@ -24,7 +24,7 @@ namespace TicTacToe
 
         public static bool operator != (Position position, Position position2) 
         {
-            return position.Equals(position2);
+            return !position.Equals(position2);
         }
     }
 }
