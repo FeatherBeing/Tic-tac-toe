@@ -34,7 +34,7 @@ namespace TicTacToe
             Grid[position.X, position.Y].Mark = player.marker;
 
             // Model -> Presenter, if grid reaches an outcome end the game
-            if (Grid.CheckOutcome(position, player)) 
+            if (Grid.HasWinner(position, player)) 
             { 
                 GameEnd(Grid.Outcome); 
             }

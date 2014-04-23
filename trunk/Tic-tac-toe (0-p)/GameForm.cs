@@ -26,7 +26,7 @@ namespace TicTacToe
         private void ShowCompletionDialog(Outcome outcome)
         {
             long winner = (long)outcome + 1;
-            string outcomeText = (outcome.Equals(Outcome.Draw)) ? "The game ended in a draw!" : "Player " + winner + " won!";
+            string outcomeText = (outcome == Outcome.Draw) ? "The game ended in a draw!" : "Player " + winner + " won!";
 
             DialogResult dialogResult = MessageBox.Show("Play again?", outcomeText, MessageBoxButtons.YesNo);
             
@@ -55,7 +55,7 @@ namespace TicTacToe
                         (a, b) =>
                         {
                             var position = new Position((a as VisualCell).CellPosition.X, (a as VisualCell).CellPosition.Y);
-                            var player = Array.Find(presenter.Players, p => p.marker.Equals(Mark.Cross));
+                            var player = Array.Find(presenter.Players, p => p.marker == Mark.Cross);
                             presenter.PlayerChoice(player, position); // Viewer -> Presenter, when btn is clicked call PlayerChoice();
                         });
 
@@ -71,7 +71,7 @@ namespace TicTacToe
             } 
             else 
             {
-                vGrid[cell.Position.X, cell.Position.Y].Text = (cell.Mark.Equals(Mark.Cross)) ? "X" : "O";
+                vGrid[cell.Position.X, cell.Position.Y].Text = (cell.Mark == Mark.Cross) ? "X" : "O";
                 vGrid[cell.Position.X, cell.Position.Y].Enabled = false;
             }
         }

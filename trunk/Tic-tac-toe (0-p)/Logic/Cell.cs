@@ -22,7 +22,7 @@ namespace TicTacToe
             set 
             {
                 // Only allow changes to cells without a mark 
-                if (markType.Equals(Mark.Empty)) 
+                if (markType == Mark.Empty) 
                 {    
                     markType = value;
                     OnCellChanged(this); //Model -> Viewer & Presenter, both can attach to this event

@@ -16,5 +16,15 @@ namespace TicTacToe
             this.X = x;
             this.Y = y;
         }
+
+        public static bool operator == (Position position, Position position2) 
+        {
+            return position.Equals(position2);
+        }
+
+        public static bool operator != (Position position, Position position2) 
+        {
+            return position.Equals(position2);
+        }
     }
 }
