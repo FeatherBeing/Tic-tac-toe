@@ -28,7 +28,7 @@ namespace TicTacToe
         void IGamePresenter.PlayerChoice(Player player, Position position) 
         {
             //This is so the AI can start playing again when a new round is started
-            (Players[1] as AIPlayer).DisallowPlay = false;
+            (Players[1] as AIPlayer).AllowPlay = true;
 
             // Presenter -> Model, place marker at coords
             Grid[position.X, position.Y].Mark = player.marker;

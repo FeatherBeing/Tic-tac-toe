@@ -10,7 +10,7 @@ namespace TicTacToe.AI
         private readonly IGamePresenter presenter;
         private readonly DecisionMaker decisionMaker;
         public int Turn { get; set; } // We aren't using this right now but it's good for state-based AIs
-        public bool DisallowPlay { get; set; }
+        public bool AllowPlay { get; set; }
 
         public AIPlayer(Mark marker, IGamePresenter presenter) : base(marker)
         {
@@ -18,13 +18,13 @@ namespace TicTacToe.AI
             decisionMaker = new DecisionMaker();
             Turn = new int();
             presenter.Played += DoTurn;
-            presenter.GameEnd += new GameEndHandler(x => DisallowPlay = true); // Disable play for AI after game has been won
+            presenter.GameEnd += new GameEndHandler(delegate { AllowPlay = false; }); // Disable play for AI after game has been won
         }
 
         private void DoTurn(Cell cell, Player player)
         {
             //This check is necessary, otherwise we'll cause an infinite loop
-            if (player is AIPlayer || DisallowPlay) 
+            if (player is AIPlayer || !AllowPlay) 
             { 
                 return;
             }

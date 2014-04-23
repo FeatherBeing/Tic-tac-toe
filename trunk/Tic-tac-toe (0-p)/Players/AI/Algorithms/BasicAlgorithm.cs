@@ -18,9 +18,16 @@ namespace TicTacToe.AI
         private List<int> verticalWin = new List<int>() { 0, 1, 2 };
         private bool diagonalWin = true;
         private bool diagonalWin2 = true;
+        private Mark opponentMark = default(Mark);
 
         Position IDecisionAlgorithm.Invoke(Grid grid, AIPlayer player) 
         {
+            //If this is the first invocation then assign opponentMark value to field
+            if (opponentMark == default(Mark))
+            {
+                opponentMark = (player.marker == Mark.Cross) ? Mark.Nought : Mark.Cross;
+            }
+
             var strategies = new Decision[] { StrategyOne(grid, player), StrategyTwo(grid, player) };
 
             return 
@@ -50,20 +57,20 @@ namespace TicTacToe.AI
             // Start by analyzing board state to identify what wins that are possible
             foreach (Cell cell in grid)
             {
-                if (cell.Mark == Mark.Cross)
+                if (cell.Mark == opponentMark)
                 {
                     horizontalWin.RemoveAll(n => n == cell.Position.Y);
                     verticalWin.RemoveAll(n => n == cell.Position.X);
 
                     //If opponent has his marker in the middle then all diagonal wins are impossible
-                    if (cell.Position == middle && cell.Mark == Mark.Cross)
+                    if (cell.Position == middle && cell.Mark == opponentMark)
                     {
                         diagonalWin = false;
                         diagonalWin2 = false;
 
                     }
                     // For other cells different rules apply, as there are 3 horizontal and diagonal wins each
-                    else if (cell.Mark == Mark.Cross)
+                    else if (cell.Mark == opponentMark)
                     {
                         if (corners.Contains(cell.Position)) // Check if diagonal win is possible
                         {
@@ -137,7 +144,7 @@ namespace TicTacToe.AI
                     {
                         options.Add(Tuple.Create((diagonalNeighbours.Length == 2) ? 3 : 1, grid.Find(
                             (entry) => 
-                                corners.Any(pos => pos == entry.Position && entry.Mark == Mark.Empty || 
+                                corners.Any(position => position == entry.Position && entry.Mark == Mark.Empty || 
                                 entry.Position == middle) && entry.Mark == Mark.Empty)
                                 .Position));
                     }
@@ -146,7 +153,7 @@ namespace TicTacToe.AI
                     {
                         options.Add(Tuple.Create((diagonalNeighbours2.Length == 2) ? 3 : 1, grid.Find(
                             (entry) =>
-                                corners2.Any(pos => pos == entry.Position && entry.Mark == Mark.Empty ||
+                                corners2.Any(position => position == entry.Position && entry.Mark == Mark.Empty ||
                                 entry.Position == middle && entry.Mark == Mark.Empty))
                                 .Position));
                     }
@@ -195,7 +202,7 @@ namespace TicTacToe.AI
 
             foreach (var cell in grid)
             {
-                if (cell.Mark == Mark.Cross)
+                if (cell.Mark == opponentMark)
                 {
                     unfriendlyCells.Add(Tuple.Create(1, cell)); //Set these to priority 1 by default
                 }
