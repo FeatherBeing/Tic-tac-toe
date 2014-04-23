@@ -51,7 +51,7 @@ namespace TicTacToe.AI
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="player"></param>
-        /// <returns>Decision</returns>
+        /// <returns></returns>
         private Decision StrategyOne(Grid grid, AIPlayer player)
         {
             // Start by analyzing board state to identify what wins that are possible
