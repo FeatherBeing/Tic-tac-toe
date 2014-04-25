@@ -10,6 +10,11 @@ namespace TicTacToe
         None = -1, CrossWin, NoughtWin, Draw
     }
 
+    public enum Win
+    {
+        HorizontalWin, VerticalWin, DiagonalWin, DiagonalWin2
+    }
+
     class Grid
     {
         const int MAX_CELLS = 3;                
@@ -90,7 +95,7 @@ namespace TicTacToe
                     rows.Add(this.DiagonalRelatives2(cells[i, i]));
                 }
 
-                selection.AddRange(rows.FindAll(array => array.Length == 3));
+                selection.AddRange(rows.FindAll(array => array.Length == 3 && array.First().Mark == Mark.Empty));
             }
 
             return selection;
