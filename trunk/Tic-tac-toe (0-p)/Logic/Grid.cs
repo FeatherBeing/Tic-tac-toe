@@ -10,50 +10,22 @@ namespace TicTacToe
         None = -1, CrossWin, NoughtWin, Draw
     }
 
-    public enum Win 
-    {
-        VerticalWin, HorizontalWin, DiagonalWin, DiagonalWin2
-    }
-
     class Grid
     {
-        const int MAX_CELLS = 3;
-        
-        #region Properties & Fields
-        
-        public Cell[,] Cells { get; set; }
+        const int MAX_CELLS = 3;                
         private Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
-        public Cell this[int index, int index2]
+        public Cell this[int column, int row]
         {
             get
             {
-                if (index <= cells.GetUpperBound(0) && index >= cells.GetLowerBound(0) && index2 <= cells.GetUpperBound(1) && index2 >= cells.GetLowerBound(1))
-                {
-                    return cells[index, index2];
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-
+                return cells[column, row];
             }
-            set 
+            set
             {
-                if (index <= cells.GetUpperBound(0) && index >= cells.GetLowerBound(0) && index2 <= cells.GetUpperBound(1) && index2 >= cells.GetLowerBound(1))
-                {
-                    cells[index, index2] = value;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+                cells[column, row] = value;
             }
         }
-        public Outcome Outcome { get; private set; }
-        
-        #endregion
-
-        #region Constructors
+        public Outcome Outcome { get; private set; }        
 
         public Grid(IGameViewer viewer)
         {
@@ -68,11 +40,7 @@ namespace TicTacToe
             }
         }
 
-        #endregion
-
-        #region Instanced Methods
-
-        public bool CheckOutcome(Position coords, Player player)
+        public bool HasWinner(Position coords, Player player)
         {
             //Check for player wins first
             var corners = new Position[] { new Position(0,0), new Position(2,0), new Position(0,2), new Position(2,2) };
@@ -80,7 +48,7 @@ namespace TicTacToe
             var checkDiagonals = false;
             
             //If the cell is at the corner or the middle we have to check for diagonal wins too
-            if (corners.Any(e => e.Equals(coords)) || middle.Equals(coords)) { checkDiagonals = true; }
+            if (corners.Any(e => e == coords) || middle == coords) { checkDiagonals = true; }
 
             if (player.PlayerWon(this[coords.X, coords.Y], this, checkDiagonals))
             {
@@ -122,7 +90,7 @@ namespace TicTacToe
                     rows.Add(this.DiagonalRelatives2(cells[i, i]));
                 }
 
-                selection.AddRange(rows.FindAll(array => array.Length.Equals(3)));
+                selection.AddRange(rows.FindAll(array => array.Length == 3));
             }
 
             return selection;
@@ -134,7 +102,7 @@ namespace TicTacToe
 
             foreach (Cell cell in cells)
             {
-                if (cell.MarkType == Mark.Empty)
+                if (cell.Mark == Mark.Empty)
                 {
                     emptyCells.Add(cell);
                 }
@@ -149,7 +117,7 @@ namespace TicTacToe
             {
                 for (int y = 0; y < cells.GetLength(1); y++)
                 {
-                    if (cells[x, y].Equals(cell))
+                    if (cells[x, y] == cell)
                     {
                         return new Position(x, y);
                     }
@@ -166,7 +134,7 @@ namespace TicTacToe
 
             for (int x = 0; x < 3; x++)
             {
-                if (cells[x, x].MarkType.Equals(cell.MarkType)) 
+                if (cells[x, x].Mark == cell.Mark) 
                 { 
                     relatives.Add(cells[x, x]); 
                 }
@@ -181,7 +149,7 @@ namespace TicTacToe
 
             for (int x = 0; x < 3; x++)
             {
-                if (cells[x, 2 - x].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[x, 2 - x]); }
+                if (cells[x, 2 - x].Mark == cell.Mark) { relatives.Add(cells[x, 2 - x]); }
             }
 
             return relatives.ToArray();
@@ -195,7 +163,7 @@ namespace TicTacToe
             for (int x = 0; x < 3; x++)
             {
                 //Find row of cell
-                if (cells[x, rowNum].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[x, rowNum]); }
+                if (cells[x, rowNum].Mark == cell.Mark) { relatives.Add(cells[x, rowNum]); }
             }
 
             return relatives.ToArray();
@@ -209,7 +177,7 @@ namespace TicTacToe
             for (int y = 0; y < 3; y++)
             {
                 //Find row of cell
-                if (cells[colNum, y].MarkType.Equals(cell.MarkType)) { relatives.Add(cells[colNum, y]); }
+                if (cells[colNum, y].Mark == cell.Mark) { relatives.Add(cells[colNum, y]); }
             }
 
             return relatives.ToArray();
@@ -259,26 +227,5 @@ namespace TicTacToe
                 yield return cell;
             }
         }
-
-        public Dictionary<Win, int> GetPossibleWins(Mark mark)
-        {
-            var horizontalWinRows = new List<int>();
-            var verticalWinRows = new List<int>();
-
-            for (int i = 0; i < cells.GetUpperBound(1); i++)
-            {
-                if (this.HorizontalRelatives(cells[i, i]).Length == 3)
-                {
-                    horizontalWinRows.Add(i);
-                }
-
-                if (this.VerticalRelatives(cells[i, i]).Length == 3)
-                {
-                    verticalWinRows.Add(i);
-                }
-            }
-        }
-
-       #endregion
     }
 }

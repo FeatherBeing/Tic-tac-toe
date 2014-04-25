@@ -9,24 +9,22 @@ namespace TicTacToe
     {
         public delegate void CellChangedHandler(Cell cell);
 
-        #region Properties & Fields
-
-        private Mark markType = Mark.Empty; /* Have to use old way of defining properties here unfortunately due to lack of support for,
+        private Mark mark = Mark.Empty; /* Have to use old way of defining properties here unfortunately due to lack of support for,
                                              * default values in auto-implemented properties. */
         private IGameViewer viewer;
         public static event CellChangedHandler OnCellChanged; 
         public readonly Position Position;
-        public Mark MarkType { 
+        public Mark Mark { 
             get 
             { 
-                return markType; 
+                return mark; 
             } 
             set 
             {
                 // Only allow changes to cells without a mark 
-                if (markType.Equals(Mark.Empty)) 
+                if (mark == Mark.Empty) 
                 {    
-                    markType = value;
+                    mark = value;
                     OnCellChanged(this); //Model -> Viewer & Presenter, both can attach to this event
                 } 
                 else // It's impossible for players to change assigned cells.
@@ -37,10 +35,6 @@ namespace TicTacToe
             } 
         }
 
-        #endregion
-
-        #region Constructors
-
         public Cell(IGameViewer viewer, Position coords)
         {
             this.viewer = viewer;
@@ -48,16 +42,10 @@ namespace TicTacToe
             viewer.DisplayCell(this);
         }
 
-        #endregion
-
-        #region Instanced Methods
-
         public void Reset() //This method is necessary because we can't use the property to
         {
-            markType = Mark.Empty;
+            mark = Mark.Empty;
             viewer.ResetCell(this);
         }
-
-        #endregion
     }
 }

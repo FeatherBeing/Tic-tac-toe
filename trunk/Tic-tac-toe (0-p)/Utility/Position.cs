@@ -8,14 +8,8 @@ namespace TicTacToe
 {
     struct Position
     {
-        #region Fields & Properties
-
         public readonly int X;
         public readonly int Y;
-
-        #endregion
-
-        #region Constructors
 
         public Position(int x, int y) 
         {
@@ -23,6 +17,14 @@ namespace TicTacToe
             this.Y = y;
         }
 
-        #endregion
+        public static bool operator == (Position position, Position position2) 
+        {
+            return position.Equals(position2);
+        }
+
+        public static bool operator != (Position position, Position position2) 
+        {
+            return !position.Equals(position2);
+        }
     }
 }
