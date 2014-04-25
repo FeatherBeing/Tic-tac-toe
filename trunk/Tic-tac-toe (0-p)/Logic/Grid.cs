@@ -12,7 +12,7 @@ namespace TicTacToe
 
     public enum Win
     {
-        HorizontalWin, VerticalWin, DiagonalWin, DiagonalWin2
+        HorizontalWin, VerticalWin, DiagonalWin
     }
 
     class Grid
