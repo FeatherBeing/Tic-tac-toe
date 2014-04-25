@@ -98,7 +98,7 @@ namespace TicTacToe.AI
             if (friendlyCells.Length < 1)
             {
                 //Get all empty rows
-                var options = grid.GetEmptyRows();
+                var options = grid.GetEmptyLines();
                 var rnd = new Random();
 
                 //Since these are all equally viable options just randomize our choice between them all with priority 1.
@@ -159,7 +159,7 @@ namespace TicTacToe.AI
                 //If it doesn't find any neighbouring cells that can win just place marker on an empty valid space
                 if (options.Count < 1)
                 {
-                    var emptyRows = grid.GetEmptyRows();
+                    var emptyRows = grid.GetEmptyLines();
                     var rnd = new Random();
 
                     //Since these are all equally viable options just randomize our choice between them all with priority 1.

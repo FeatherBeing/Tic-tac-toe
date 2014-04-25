@@ -5,9 +5,14 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    public enum OutcomeType
+    public enum Outcome
     {
         None = -1, CrossWin, NoughtWin, Draw
+    }
+
+    public enum Win 
+    {
+        VerticalWin, HorizontalWin, DiagonalWin, DiagonalWin2
     }
 
     class Grid
@@ -44,7 +49,7 @@ namespace TicTacToe
                 }
             }
         }
-        public OutcomeType Outcome { get; private set; }
+        public Outcome Outcome { get; private set; }
         
         #endregion
 
@@ -52,7 +57,7 @@ namespace TicTacToe
 
         public Grid(IGameViewer viewer)
         {
-            Outcome = OutcomeType.None;
+            Outcome = Outcome.None;
 
             for (int x = 0; x < MAX_CELLS; x++)
             {
@@ -82,10 +87,10 @@ namespace TicTacToe
                 switch (player.marker)
                 {
                     case Mark.Cross:
-                        Outcome = OutcomeType.CrossWin;
+                        Outcome = Outcome.CrossWin;
                         break;
                     case Mark.Nought:
-                        Outcome = OutcomeType.NoughtWin;
+                        Outcome = Outcome.NoughtWin;
                         break;
                 }
 
@@ -95,7 +100,7 @@ namespace TicTacToe
             //Now we can check for draws
             if (this.GetEmptyCells().Length == 0)
             {
-                Outcome = OutcomeType.Draw;
+                Outcome = Outcome.Draw;
                 return true;
             }
 
@@ -103,7 +108,7 @@ namespace TicTacToe
             return false;
         }
 
-        public List<Cell[]> GetEmptyRows()
+        public List<Cell[]> GetEmptyLines()
         {
             var selection = new List<Cell[]>();
 
@@ -252,6 +257,25 @@ namespace TicTacToe
             foreach (Cell cell in cells)
             {
                 yield return cell;
+            }
+        }
+
+        public Dictionary<Win, int> GetPossibleWins(Mark mark)
+        {
+            var horizontalWinRows = new List<int>();
+            var verticalWinRows = new List<int>();
+
+            for (int i = 0; i < cells.GetUpperBound(1); i++)
+            {
+                if (this.HorizontalRelatives(cells[i, i]).Length == 3)
+                {
+                    horizontalWinRows.Add(i);
+                }
+
+                if (this.VerticalRelatives(cells[i, i]).Length == 3)
+                {
+                    verticalWinRows.Add(i);
+                }
             }
         }
 

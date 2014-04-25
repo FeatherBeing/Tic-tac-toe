@@ -6,7 +6,7 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    public delegate void GameEndHandler(OutcomeType outcome);
+    public delegate void GameEndHandler(Outcome outcome);
     internal delegate void PlayedEventHandler(Cell cell, Player player);
 
     class GameController : IGamePresenter 

@@ -33,12 +33,12 @@ namespace TicTacToe
             Cell.OnCellChanged += (this as IGameViewer).CellChanged;
         }
 
-        private void ShowCompletionDialog(OutcomeType outcome)
+        private void ShowCompletionDialog(Outcome outcome)
         {
             long winner = (long)outcome + 1;
             string wonText = "Player " + winner + " won!";
 
-            if (outcome.Equals(OutcomeType.Draw))
+            if (outcome.Equals(Outcome.Draw))
             { 
                 wonText = "The game ended in a draw!";
             }
