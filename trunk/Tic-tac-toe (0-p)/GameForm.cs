@@ -20,13 +20,12 @@ namespace TicTacToe
         {
             presenter = new GameController(this);
             presenter.GameEnd += ShowCompletionDialog; // When IGamePresenter raises GameEnd event then the viewer is free to show completion dialog
-            Cell.OnCellChanged += (this as IGameViewer).CellChanged;
+            Cell.CellChanged += (this as IGameViewer).CellChanged;
         }
 
         private void ShowCompletionDialog(Outcome outcome)
         {
-            long winner = (long)outcome + 1;
-            string outcomeText = (outcome == Outcome.Draw) ? "The game ended in a draw!" : "Player " + winner + " won!";
+            string outcomeText = (outcome == Outcome.Draw) ? "The game ended in a draw!" : "Player " + (int)outcome + 1 + " won!";
 
             DialogResult dialogResult = MessageBox.Show("Play again?", outcomeText, MessageBoxButtons.YesNo);
             

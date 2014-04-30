@@ -30,7 +30,7 @@ namespace TicTacToe
             //This is so the AI can start playing again when a new round is started
             (Players[1] as AIPlayer).AllowPlay = true;
 
-            // Presenter -> Model, place marker at coords
+            // Presenter -> Model, place marker at position
             Grid[position.X, position.Y].Mark = player.marker;
 
             // Model -> Presenter, if grid reaches an outcome end the game

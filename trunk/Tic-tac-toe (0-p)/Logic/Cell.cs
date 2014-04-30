@@ -12,7 +12,7 @@ namespace TicTacToe
         private Mark mark = Mark.Empty; /* Have to use old way of defining properties here unfortunately due to lack of support for,
                                              * default values in auto-implemented properties. */
         private IGameViewer viewer;
-        public static event CellChangedHandler OnCellChanged; 
+        public static event CellChangedHandler CellChanged; 
         public readonly Position Position;
         public Mark Mark { 
             get 
@@ -25,7 +25,7 @@ namespace TicTacToe
                 if (mark == Mark.Empty) 
                 {    
                     mark = value;
-                    OnCellChanged(this); //Model -> Viewer & Presenter, both can attach to this event
+                    CellChanged(this); //Model -> Viewer & Presenter, both can attach to this event
                 } 
                 else // It's impossible for players to change assigned cells.
                      // However the AI can do it so we need to throw an exception if they do

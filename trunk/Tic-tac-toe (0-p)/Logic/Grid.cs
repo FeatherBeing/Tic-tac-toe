@@ -5,7 +5,7 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    public enum Outcome
+    public enum Outcome : int
     {
         None = -1, CrossWin, NoughtWin, Draw
     }
@@ -45,7 +45,7 @@ namespace TicTacToe
             }
         }
 
-        public bool HasWinner(Position coords, Player player)
+        public bool HasWinner(Position position, Player player)
         {
             //Check for player wins first
             var corners = new Position[] { new Position(0,0), new Position(2,0), new Position(0,2), new Position(2,2) };
@@ -53,20 +53,14 @@ namespace TicTacToe
             var checkDiagonals = false;
             
             //If the cell is at the corner or the middle we have to check for diagonal wins too
-            if (corners.Any(e => e == coords) || middle == coords) { checkDiagonals = true; }
+            if (corners.Any(e => e == position) || middle == position) 
+            { 
+                checkDiagonals = true; 
+            }
 
-            if (player.PlayerWon(this[coords.X, coords.Y], this, checkDiagonals))
+            if (player.PlayerWon(this[position.X, position.Y], this, checkDiagonals))
             {
-                switch (player.marker)
-                {
-                    case Mark.Cross:
-                        Outcome = Outcome.CrossWin;
-                        break;
-                    case Mark.Nought:
-                        Outcome = Outcome.NoughtWin;
-                        break;
-                }
-
+                Outcome = (player.marker == Mark.Cross) ? Outcome.CrossWin : Outcome.NoughtWin;
                 return true;
             }
 
@@ -100,6 +94,12 @@ namespace TicTacToe
 
             return selection;
         }
+
+        //public Dictionary<Win, List<int>> GetPossibleWins(Mark mark)
+        //{
+        //    Mark opponentMark = (mark == Mark.Cross) ? Mark.Nought : Mark.Cross;
+        //    var opponentCells = Where(cell => cell.Mark == opponentMark);
+        //}
 
         public Cell[] GetEmptyCells()
         {
