@@ -17,7 +17,7 @@ namespace TicTacToe
 
     class Grid
     {
-        const int MAX_CELLS = 3;                
+        const int MAX_CELLS = 3;
         private Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
         public Cell this[int column, int row]
         {
@@ -32,7 +32,7 @@ namespace TicTacToe
         }
         public Outcome Outcome { get; private set; }        
 
-        public Grid(IGameViewer viewer)
+        public Grid(IGamePresenter presenter, IGameViewer viewer)
         {
             Outcome = Outcome.None;
 
@@ -40,7 +40,7 @@ namespace TicTacToe
             {
                 for (int y = 0; y < MAX_CELLS; y++)
                 {
-                    this[x, y] = new Cell(viewer, new Position(x, y));
+                    this[x, y] = new Cell(presenter, viewer, new Position(x, y));
                 }
             }
         }

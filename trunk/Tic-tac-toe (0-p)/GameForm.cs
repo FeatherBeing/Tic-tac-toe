@@ -39,25 +39,9 @@ namespace TicTacToe
             }
         }
 
-        void IGameViewer.DisplayCell(Cell cell)
+        void IGameViewer.DisplayCell(IGamePresenter present, Cell cell)
         {
-            vGrid[cell.Position.X, cell.Position.Y] = new VisualCell() 
-            {
-                AutoSize = true,
-                Location = new Point(cell.Position.X * 110, cell.Position.Y * 110),
-                Size = new Size(124, 124),
-                Font = new Font(Font.FontFamily, 40),
-                CellPosition = new Position(cell.Position.X, cell.Position.Y)
-            };
-
-            vGrid[cell.Position.X, cell.Position.Y].Click += new EventHandler(
-                        (a, b) =>
-                        {
-                            var position = new Position((a as VisualCell).CellPosition.X, (a as VisualCell).CellPosition.Y);
-                            var player = Array.Find(presenter.Players, p => p.marker == Mark.Cross);
-                            presenter.PlayerChoice(player, position); // Viewer -> Presenter, when btn is clicked call PlayerChoice();
-                        });
-
+            vGrid[cell.Position.X, cell.Position.Y] = new VisualCell(cell, present);
             Controls.Add(vGrid[cell.Position.X, cell.Position.Y]);
         }
 

@@ -15,7 +15,7 @@ namespace TicTacToe.MVP
         //This is called from Model whenever a cell changes type
         void CellChanged(Cell cell);
         //Called whenever a new cell is created
-        void DisplayCell(Cell cell);
+        void DisplayCell(IGamePresenter present, Cell cell);
         //Resets the cell to it's initial state, called when restarting the game
         void ResetCell(Cell cell);
     }

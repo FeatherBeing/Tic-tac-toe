@@ -19,14 +19,17 @@ namespace TicTacToe
 
         public GameController(IGameViewer viewer) 
         { 
-            Grid = new Grid(viewer);
+            Grid = new Grid(this, viewer);
             Players = new Player[2];
             Players[0] = new Player(Mark.Cross); // Always set to human 
             Players[1] = new AIPlayer(Mark.Nought, this); // Set to AI            
         }
 
-        void IGamePresenter.PlayerChoice(Player player, Position position) 
+        void IGamePresenter.PlayerChoice(Object sender, Position position) 
         {
+            var player = (sender is VisualCell) ? Players.First(p => p.marker == Mark.Cross) 
+                : Players.First(p => p.marker == Mark.Nought);
+
             //This is so the AI can start playing again when a new round is started
             (Players[1] as AIPlayer).AllowPlay = true;
 

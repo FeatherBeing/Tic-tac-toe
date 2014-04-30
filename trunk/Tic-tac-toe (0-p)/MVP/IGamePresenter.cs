@@ -16,7 +16,7 @@ namespace TicTacToe.MVP
         Grid Grid { get; }
         Player[] Players { get; }
         void RestartGame();
-        void PlayerChoice(Player player, Position coords);
+        void PlayerChoice(Object sender, Position coords);
         event GameEndHandler GameEnd;
         event PlayedEventHandler Played;
     }

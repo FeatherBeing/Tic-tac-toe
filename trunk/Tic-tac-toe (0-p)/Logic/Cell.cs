@@ -11,7 +11,8 @@ namespace TicTacToe
 
         private Mark mark = Mark.Empty; /* Have to use old way of defining properties here unfortunately due to lack of support for,
                                              * default values in auto-implemented properties. */
-        private IGameViewer viewer;
+        private readonly IGameViewer viewer;
+        private readonly IGamePresenter presenter;
         public static event CellChangedHandler CellChanged; 
         public readonly Position Position;
         public Mark Mark { 
@@ -35,11 +36,12 @@ namespace TicTacToe
             } 
         }
 
-        public Cell(IGameViewer viewer, Position coords)
+        public Cell(IGamePresenter presenter, IGameViewer viewer, Position coords)
         {
+            this.presenter = presenter;
             this.viewer = viewer;
             this.Position = coords;
-            viewer.DisplayCell(this);
+            viewer.DisplayCell(presenter, this);
         }
 
         public void Reset() //This method is necessary because we can't use the property to
