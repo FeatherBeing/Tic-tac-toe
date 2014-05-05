@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace TicTacToe.AI
             //If this is the first invocation then assign opponentMark value to field
             if (opponentMark == default(Mark))
             {
-                opponentMark = (player.marker == Mark.Cross) ? Mark.Nought : Mark.Cross;
+                opponentMark = (player.mark == Mark.Cross) ? Mark.Nought : Mark.Cross;
             }
 
             var strategies = new Decision[] { StrategyOne(grid, player), StrategyTwo(grid, player) };
@@ -62,7 +63,7 @@ namespace TicTacToe.AI
                     horizontalWin.RemoveAll(n => n == cell.Position.Y);
                     verticalWin.RemoveAll(n => n == cell.Position.X);
 
-                    //If opponent has his marker in the middle then all diagonal wins are impossible
+                    //If opponent has his mark in the middle then all diagonal wins are impossible
                     if (cell.Position == middle && cell.Mark == opponentMark)
                     {
                         diagonalWin = false;
@@ -93,10 +94,10 @@ namespace TicTacToe.AI
             }
 
             //Now calculate which type of win to prioritize, starting by checking where we already have marks placed
-            var friendlyCells = grid.Where(cell => cell.Mark == player.marker);
+            var friendlyCells = ((IEnumerable)grid.cells).Cast<Cell>().Where(cell => cell.Mark == player.mark);
 
             //If we don't have any friendly marks placed then we will have to base our decision on any row where a win is possible
-            if (friendlyCells.Length < 1)
+            if (friendlyCells.Count() < 1)
             {
                 //Get all empty rows
                 var options = grid.GetEmptyLines();
@@ -123,7 +124,7 @@ namespace TicTacToe.AI
                     {
                         // Okay since horizontal wins are OK at this point then just find the cell and add it to the list
                         // The priority is calculated as if (number of neighbours == 2) then priority = 3 else priority = 1.
-                        options.Add(Tuple.Create((horizontalNeighbours.Length == 2) ? 3 : 1, grid.Find(
+                        options.Add(Tuple.Create((horizontalNeighbours.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
                             (entry) => 
                                 entry.Position.Y == cell.Position.Y && 
                                 entry.Mark == Mark.Empty)
@@ -133,7 +134,7 @@ namespace TicTacToe.AI
                     //Same thing here but X-axis instead
                     if (verticalWin.Contains(cell.Position.X))
                     {
-                        options.Add(Tuple.Create((verticalNeighbours.Length == 2) ? 3 : 1, grid.Find(
+                        options.Add(Tuple.Create((verticalNeighbours.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
                             (entry) =>
                                 entry.Position.X == cell.Position.X &&
                                 entry.Mark == Mark.Empty)
@@ -142,7 +143,7 @@ namespace TicTacToe.AI
 
                     if (diagonalWin && corners.Any(pos => pos == cell.Position) || diagonalWin && cell.Position == middle) //Only check for diagonal wins if cell is in a corner
                     {
-                        options.Add(Tuple.Create((diagonalNeighbours.Length == 2) ? 3 : 1, grid.Find(
+                        options.Add(Tuple.Create((diagonalNeighbours.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
                             (entry) => 
                                 corners.Any(position => position == entry.Position && entry.Mark == Mark.Empty || 
                                 entry.Position == middle) && entry.Mark == Mark.Empty)
@@ -151,7 +152,7 @@ namespace TicTacToe.AI
 
                     if (diagonalWin2 && corners2.Any(pos => pos == cell.Position) || diagonalWin2 && cell.Position == middle) 
                     {
-                        options.Add(Tuple.Create((diagonalNeighbours2.Length == 2) ? 3 : 1, grid.Find(
+                        options.Add(Tuple.Create((diagonalNeighbours2.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
                             (entry) =>
                                 corners2.Any(position => position == entry.Position && entry.Mark == Mark.Empty ||
                                 entry.Position == middle && entry.Mark == Mark.Empty))
@@ -159,7 +160,7 @@ namespace TicTacToe.AI
                     }
                 }
 
-                //If it doesn't find any neighbouring cells that can win just place marker on an empty valid space
+                //If it doesn't find any neighbouring cells that can win just place mark on an empty valid space
                 if (options.Count < 1)
                 {
                     var emptyRows = grid.GetEmptyLines();
@@ -197,50 +198,50 @@ namespace TicTacToe.AI
         private Decision StrategyTwo(Grid grid, AIPlayer player)
         {
             //Start by getting each X-marked cell
-            var unfriendlyCells = new List<Tuple<int,Cell>>();
-            var emptyCells = grid.GetEmptyCells();
+            var unfriendlyCells = new List<Cell>();
+            var emptyCells = grid.cells.Cast<Cell>().Where(cell => cell.Mark == Mark.Empty);
 
-            foreach (var cell in grid)
-            {
-                if (cell.Mark == opponentMark)
-                {
-                    unfriendlyCells.Add(Tuple.Create(1, cell)); //Set these to priority 1 by default
-                }
-            }
+            grid.cells.Cast<Cell>().Where(cell => cell.Mark == opponentMark).ToList().ForEach(unfriendlyCells.Add);
 
             var prioritizedOptions = new List<Tuple<int,Position>>();
             
             //Now get all relatives + empty cells of those X-marked cells
-            foreach (var option in unfriendlyCells)
+            foreach (var entry in unfriendlyCells)
             {
-                int horizontalNeighbours = grid.HorizontalRelatives(option.Item2).Length;
-                var emptyHorizontalCells = emptyCells.Where(entry => entry.Position.Y == option.Item2.Position.Y);
-                int verticalNeighbours = grid.VerticalRelatives(option.Item2).Length;
-                var emptyVerticalCells = emptyCells.Where(entry => entry.Position.X == option.Item2.Position.X);
-                int diagonalNeighbours = grid.DiagonalRelatives(option.Item2).Length;
-                var emptyDiagonalCells = emptyCells.Where(entry => corners.Any(corner => corner == entry.Position));
-                int diagonalNeighbours2 = grid.DiagonalRelatives2(option.Item2).Length;
-                var emptyDiagonalCells2 = emptyCells.Where(entry => corners2.Any(corner => corner == entry.Position));
+                var neighbours = new 
+                { 
+                    Horizontal = grid.HorizontalRelatives(entry).Length, 
+                    Vertical = grid.VerticalRelatives(entry).Length,
+                    Diagonal = grid.DiagonalRelatives(entry).Length,
+                    Diagonal2 = grid.DiagonalRelatives2(entry).Length
+                };
+                var emptyLines = new 
+                { 
+                    Horizontal = emptyCells.Where(cell => cell.Position.Y == entry.Position.Y),
+                    Vertical = emptyCells.Where(cell => cell.Position.X == entry.Position.X),
+                    Diagonal = emptyCells.Where(cell => corners.Any(corner => corner == entry.Position)),
+                    Diagonal2 = emptyCells.Where(cell => corners2.Any(corner => corner == entry.Position))
+                };
 
-                if(horizontalNeighbours > 1 && emptyHorizontalCells.Count() == 1) 
+                //If we have 1 neighbouring X-cell + 1 empty cell then we must block them off with the highest priority
+                if(neighbours.Horizontal > 1 && emptyLines.Horizontal.Count() == 1) 
                 {
-                    //If we have 1 neighbouring X-cell + 1 empty cell then we must block them off with the highest priority
-                    prioritizedOptions.Add(Tuple.Create(2, emptyHorizontalCells.First().Position));
+                    prioritizedOptions.Add(Tuple.Create(2, emptyLines.Horizontal.First().Position));
                 }
 
-                if (verticalNeighbours > 1 && emptyVerticalCells.Count() == 1)
+                if (neighbours.Vertical > 1 && emptyLines.Vertical.Count() == 1)
                 {
-                    prioritizedOptions.Add(Tuple.Create(2, emptyVerticalCells.First().Position));
+                    prioritizedOptions.Add(Tuple.Create(2, emptyLines.Vertical.First().Position));
                 }
 
-                if (diagonalNeighbours > 1 && emptyDiagonalCells.Count() == 1)
+                if (neighbours.Diagonal > 1 && emptyLines.Diagonal.Count() == 1)
                 {
-                    prioritizedOptions.Add(Tuple.Create(2, emptyDiagonalCells.First().Position));
+                    prioritizedOptions.Add(Tuple.Create(2, emptyLines.Diagonal.First().Position));
                 }
 
-                if (diagonalNeighbours2 > 1 && emptyDiagonalCells2.Count() == 1)
+                if (neighbours.Diagonal2 > 1 && emptyLines.Diagonal2.Count() == 1)
                 {
-                    prioritizedOptions.Add(Tuple.Create(2, emptyDiagonalCells2.First().Position));
+                    prioritizedOptions.Add(Tuple.Create(2, emptyLines.Diagonal2.First().Position));
                 }
             }
 
@@ -252,8 +253,9 @@ namespace TicTacToe.AI
                 //If there are no priority 2 options then filter out all empty cells that are within the same axis as a X-marked cell
                 var options = emptyCells.Where(
                     (entry) => 
-                        unfriendlyCells.Any(cell => cell.Item2.Position.X == entry.Position.X) ||
-                        unfriendlyCells.Any(cell => cell.Item2.Position.Y == entry.Position.Y)).ToArray();
+                        unfriendlyCells.Any(cell => cell.Position.X == entry.Position.X) ||
+                        unfriendlyCells.Any(cell => cell.Position.Y == entry.Position.Y))
+                        .ToArray();
 
                 //Randomly return one of them
                 return new Decision(1, options[new Random().Next(options.Length)].Position);

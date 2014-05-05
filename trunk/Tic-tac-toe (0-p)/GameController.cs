@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TicTacToe.AI;
@@ -27,14 +28,14 @@ namespace TicTacToe
 
         void IGamePresenter.PlayerChoice(Object sender, Position position) 
         {
-            var player = (sender is VisualCell) ? Players.First(p => p.marker == Mark.Cross) 
-                : Players.First(p => p.marker == Mark.Nought);
+            var player = (sender is VisualCell) ? Players.First(p => p.mark == Mark.Cross) 
+                : Players.First(p => p.mark == Mark.Nought);
 
             //This is so the AI can start playing again when a new round is started
             (Players[1] as AIPlayer).AllowPlay = true;
 
-            // Presenter -> Model, place marker at position
-            Grid[position.X, position.Y].Mark = player.marker;
+            // Presenter -> Model, place mark at position
+            Grid.cells[position.X, position.Y].Mark = player.mark;
 
             // Model -> Presenter, if grid reaches an outcome end the game
             if (Grid.HasWinner(position, player)) 
@@ -43,13 +44,13 @@ namespace TicTacToe
             }
 
             //Raise Played Event
-            Played(Grid[position.X, position.Y], player);  
+            Played(Grid.cells[position.X, position.Y], player);  
         }
 
         void IGamePresenter.RestartGame() 
         {
             // Reset grid
-            Grid.Reset();
+            ((IEnumerable)Grid.cells).Cast<Cell>().ToList().ForEach(cell => cell.Reset());
 
             // Reset AIPlayer
             (Players[1] as AIPlayer).Reset();

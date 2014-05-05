@@ -8,12 +8,12 @@ namespace TicTacToe
 {
     class Player
     {
-        public readonly Mark marker;
+        public readonly Mark mark;
         public int Score { get; set; }
 
         public Player(Mark marker)
         {
-            this.marker = marker;
+            this.mark = marker;
         }
 
         public bool PlayerWon(Cell cell, Grid grid, bool checkDiagonals) 

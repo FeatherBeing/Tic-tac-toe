@@ -18,18 +18,7 @@ namespace TicTacToe
     class Grid
     {
         const int MAX_CELLS = 3;
-        private Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
-        public Cell this[int column, int row]
-        {
-            get
-            {
-                return cells[column, row];
-            }
-            set
-            {
-                cells[column, row] = value;
-            }
-        }
+        public readonly Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
         public Outcome Outcome { get; private set; }        
 
         public Grid(IGamePresenter presenter, IGameViewer viewer)
@@ -40,7 +29,7 @@ namespace TicTacToe
             {
                 for (int y = 0; y < MAX_CELLS; y++)
                 {
-                    this[x, y] = new Cell(presenter, viewer, new Position(x, y));
+                    cells[x, y] = new Cell(presenter, viewer, new Position(x, y));
                 }
             }
         }
@@ -50,22 +39,17 @@ namespace TicTacToe
             //Check for player wins first
             var corners = new Position[] { new Position(0,0), new Position(2,0), new Position(0,2), new Position(2,2) };
             var middle = new Position(1,1);
-            var checkDiagonals = false;
-            
             //If the cell is at the corner or the middle we have to check for diagonal wins too
-            if (corners.Any(e => e == position) || middle == position) 
-            { 
-                checkDiagonals = true; 
-            }
-
-            if (player.PlayerWon(this[position.X, position.Y], this, checkDiagonals))
+            var checkDiagonals = corners.Any(e => e == position) || middle == position;
+          
+            if (player.PlayerWon(cells[position.X, position.Y], this, checkDiagonals))
             {
-                Outcome = (player.marker == Mark.Cross) ? Outcome.CrossWin : Outcome.NoughtWin;
+                Outcome = (player.mark == Mark.Cross) ? Outcome.CrossWin : Outcome.NoughtWin;
                 return true;
             }
 
             //Now we can check for draws
-            if (this.GetEmptyCells().Length == 0)
+            if (cells.Cast<Cell>().Where(cell => cell.Mark == Mark.Empty).Count() == 0)
             {
                 Outcome = Outcome.Draw;
                 return true;
@@ -93,44 +77,6 @@ namespace TicTacToe
             }
 
             return selection;
-        }
-
-        //public Dictionary<Win, List<int>> GetPossibleWins(Mark mark)
-        //{
-        //    Mark opponentMark = (mark == Mark.Cross) ? Mark.Nought : Mark.Cross;
-        //    var opponentCells = Where(cell => cell.Mark == opponentMark);
-        //}
-
-        public Cell[] GetEmptyCells()
-        {
-            List<Cell> emptyCells = new List<Cell>();
-
-            foreach (Cell cell in cells)
-            {
-                if (cell.Mark == Mark.Empty)
-                {
-                    emptyCells.Add(cell);
-                }
-            }
-
-            return emptyCells.ToArray();
-        }
-
-        public Position IndexOf(Cell cell)
-        {
-            for (int x = 0; x < cells.GetLength(0); x++)
-            {
-                for (int y = 0; y < cells.GetLength(1); y++)
-                {
-                    if (cells[x, y] == cell)
-                    {
-                        return new Position(x, y);
-                    }
-                }
-            }
-
-            //If code reaches this point, then it didn't find anything, return -1
-            return new Position(-1, -1);
         }
 
         public Cell[] DiagonalRelatives(Cell cell)
@@ -163,7 +109,7 @@ namespace TicTacToe
         public Cell[] HorizontalRelatives(Cell cell)
         {
             var relatives = new List<Cell>();
-            int rowNum = this.IndexOf(cell).Y;
+            int rowNum = cell.Position.Y;
 
             for (int x = 0; x < 3; x++)
             {
@@ -177,7 +123,7 @@ namespace TicTacToe
         public Cell[] VerticalRelatives(Cell cell)
         {
             var relatives = new List<Cell>();
-            int colNum = this.IndexOf(cell).X;
+            int colNum = cell.Position.X;
 
             for (int y = 0; y < 3; y++)
             {
@@ -186,43 +132,6 @@ namespace TicTacToe
             }
 
             return relatives.ToArray();
-        }
-
-        public Cell[] Where(Predicate<Cell> cellSelector)
-        {
-            var results = new List<Cell>();
-
-            foreach (var cell in cells)
-            {
-                if (cellSelector.Invoke(cell))
-                {
-                    results.Add(cell);
-                }
-            }
-
-            return results.ToArray();
-        }
-
-        public Cell Find(Predicate<Cell> cellSelector)
-        {
-            foreach (var cell in cells)
-            {
-                if (cellSelector.Invoke(cell))
-                {
-                    return cell;
-                }
-            }
-
-            //If it doesn't find any cell that matches predicate conditions then return null
-            return null;
-        }
-
-        public void Reset()
-        {
-            foreach (Cell cell in cells)
-            {
-                cell.Reset();
-            }
         }
 
         public IEnumerator<Cell> GetEnumerator()

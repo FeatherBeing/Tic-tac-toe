@@ -25,7 +25,7 @@ namespace TicTacToe
 
         private void ShowCompletionDialog(Outcome outcome)
         {
-            string outcomeText = (outcome == Outcome.Draw) ? "The game ended in a draw!" : "Player " + (int)outcome + 1 + " won!";
+            string outcomeText = (outcome == Outcome.Draw) ? "The game ended in a draw!" : "Player " + ((int)outcome + 1) + " won!";
 
             DialogResult dialogResult = MessageBox.Show("Play again?", outcomeText, MessageBoxButtons.YesNo);
             
