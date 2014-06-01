@@ -26,15 +26,12 @@ namespace TicTacToe
             Players[1] = new AIPlayer(Mark.Nought, this); // Set to AI            
         }
 
-        void IGamePresenter.PlayerChoice(Object sender, Position position) 
+        void IGamePresenter.PlayerChoice(Player player, Position position) 
         {
-            var player = (sender is VisualCell) ? Players.First(p => p.mark == Mark.Cross) 
-                : Players.First(p => p.mark == Mark.Nought);
-
             //This is so the AI can start playing again when a new round is started
             (Players[1] as AIPlayer).AllowPlay = true;
 
-            // Presenter -> Model, place mark at position
+            // Presenter -> Model, place _mark at position
             Grid.cells[position.X, position.Y].Mark = player.mark;
 
             // Model -> Presenter, if grid reaches an outcome end the game
@@ -50,7 +47,7 @@ namespace TicTacToe
         void IGamePresenter.RestartGame() 
         {
             // Reset grid
-            ((IEnumerable)Grid.cells).Cast<Cell>().ToList().ForEach(cell => cell.Reset());
+            Grid.cells.Cast<Cell>().ToList().ForEach(cell => cell.Reset());
 
             // Reset AIPlayer
             (Players[1] as AIPlayer).Reset();

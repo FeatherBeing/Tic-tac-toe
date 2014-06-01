@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using TicTacToe.MVP;
@@ -23,8 +24,6 @@ namespace TicTacToe
 
         public Grid(IGamePresenter presenter, IGameViewer viewer)
         {
-            Outcome = Outcome.None;
-
             for (int x = 0; x < MAX_CELLS; x++)
             {
                 for (int y = 0; y < MAX_CELLS; y++)
@@ -134,12 +133,9 @@ namespace TicTacToe
             return relatives.ToArray();
         }
 
-        public IEnumerator<Cell> GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
-            foreach (Cell cell in cells)
-            {
-                yield return cell;
-            }
+            return cells.GetEnumerator();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TicTacToe.AI
 {
     /// <summary>
-    /// Decision algorithms are modular algorithms used to calculate each next mark placement for the AI Player they will need to 
+    /// Decision algorithms are modular algorithms used to calculate each next _mark placement for the AI Player they will need to 
     /// implement this interface.
     /// </summary>
     interface IDecisionAlgorithm

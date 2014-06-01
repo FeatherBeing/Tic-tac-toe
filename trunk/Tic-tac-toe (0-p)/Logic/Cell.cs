@@ -3,14 +3,19 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    enum Mark { Empty, Cross, Nought }
+    enum Mark 
+    { 
+        Empty, 
+        Cross, 
+        Nought 
+    }
 
     class Cell
     {
         public delegate void CellChangedHandler(Cell cell);
 
-        private Mark mark = Mark.Empty; /* Have to use old way of defining properties here unfortunately due to lack of support for,
-                                             * default values in auto-implemented properties. */
+        private Mark _mark = Mark.Empty; // Have to use old way of defining properties here unfortunately due to lack of support for,
+                                        // default values in auto-implemented properties. 
         private readonly IGameViewer viewer;
         private readonly IGamePresenter presenter;
         public static event CellChangedHandler CellChanged; 
@@ -18,14 +23,14 @@ namespace TicTacToe
         public Mark Mark { 
             get 
             { 
-                return mark; 
+                return _mark; 
             } 
             set 
             {
-                // Only allow changes to cells without a mark 
-                if (mark == Mark.Empty) 
+                // Only allow changes to cells without a _mark 
+                if (_mark == Mark.Empty) 
                 {    
-                    mark = value;
+                    _mark = value;
                     CellChanged(this); //Model -> Viewer & Presenter, both can attach to this event
                 } 
                 else // It's impossible for players to change assigned cells.
@@ -46,7 +51,7 @@ namespace TicTacToe
 
         public void Reset() //This method is necessary because we can't use the property to
         {
-            mark = Mark.Empty;
+            _mark = Mark.Empty;
             viewer.ResetCell(this);
         }
     }

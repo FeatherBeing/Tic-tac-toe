@@ -63,7 +63,7 @@ namespace TicTacToe.AI
                     horizontalWin.RemoveAll(n => n == cell.Position.Y);
                     verticalWin.RemoveAll(n => n == cell.Position.X);
 
-                    //If opponent has his mark in the middle then all diagonal wins are impossible
+                    //If opponent has his _mark in the middle then all diagonal wins are impossible
                     if (cell.Position == middle && cell.Mark == opponentMark)
                     {
                         diagonalWin = false;
@@ -124,7 +124,7 @@ namespace TicTacToe.AI
                     {
                         // Okay since horizontal wins are OK at this point then just find the cell and add it to the list
                         // The priority is calculated as if (number of neighbours == 2) then priority = 3 else priority = 1.
-                        options.Add(Tuple.Create((horizontalNeighbours.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
+                        options.Add(Tuple.Create((horizontalNeighbours.Length == 2) ? 3 : 1, grid.cells.Cast<Cell>().First(
                             (entry) => 
                                 entry.Position.Y == cell.Position.Y && 
                                 entry.Mark == Mark.Empty)
@@ -134,7 +134,7 @@ namespace TicTacToe.AI
                     //Same thing here but X-axis instead
                     if (verticalWin.Contains(cell.Position.X))
                     {
-                        options.Add(Tuple.Create((verticalNeighbours.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
+                        options.Add(Tuple.Create((verticalNeighbours.Length == 2) ? 3 : 1, grid.cells.Cast<Cell>().First(
                             (entry) =>
                                 entry.Position.X == cell.Position.X &&
                                 entry.Mark == Mark.Empty)
@@ -143,7 +143,7 @@ namespace TicTacToe.AI
 
                     if (diagonalWin && corners.Any(pos => pos == cell.Position) || diagonalWin && cell.Position == middle) //Only check for diagonal wins if cell is in a corner
                     {
-                        options.Add(Tuple.Create((diagonalNeighbours.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
+                        options.Add(Tuple.Create((diagonalNeighbours.Length == 2) ? 3 : 1, grid.cells.Cast<Cell>().First(
                             (entry) => 
                                 corners.Any(position => position == entry.Position && entry.Mark == Mark.Empty || 
                                 entry.Position == middle) && entry.Mark == Mark.Empty)
@@ -152,7 +152,7 @@ namespace TicTacToe.AI
 
                     if (diagonalWin2 && corners2.Any(pos => pos == cell.Position) || diagonalWin2 && cell.Position == middle) 
                     {
-                        options.Add(Tuple.Create((diagonalNeighbours2.Length == 2) ? 3 : 1, ((IEnumerable)grid.cells).Cast<Cell>().First(
+                        options.Add(Tuple.Create((diagonalNeighbours2.Length == 2) ? 3 : 1, grid.cells.Cast<Cell>().First(
                             (entry) =>
                                 corners2.Any(position => position == entry.Position && entry.Mark == Mark.Empty ||
                                 entry.Position == middle && entry.Mark == Mark.Empty))
@@ -160,7 +160,7 @@ namespace TicTacToe.AI
                     }
                 }
 
-                //If it doesn't find any neighbouring cells that can win just place mark on an empty valid space
+                //If it doesn't find any neighbouring cells that can win just place _mark on an empty valid space
                 if (options.Count < 1)
                 {
                     var emptyRows = grid.GetEmptyLines();
@@ -189,7 +189,7 @@ namespace TicTacToe.AI
         }
 
         /// <summary>
-        /// Will attempt to force a draw by analyzing board state and opponent mark placements and attempting to block them.
+        /// Will attempt to force a draw by analyzing board state and opponent _mark placements and attempting to block them.
         /// Priority can never exceed 2 so a high-probability win will always take precedent over this strategy.
         /// </summary>
         /// <param name="board"></param>
