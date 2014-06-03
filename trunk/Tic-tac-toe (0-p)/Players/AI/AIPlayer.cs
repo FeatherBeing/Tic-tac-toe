@@ -5,7 +5,7 @@ using TicTacToe.MVP;
 
 namespace TicTacToe.AI
 {
-    class AIPlayer : Player
+    public class AIPlayer : Player
     {
         private readonly IGamePresenter presenter;
         private readonly DecisionMaker decisionMaker;

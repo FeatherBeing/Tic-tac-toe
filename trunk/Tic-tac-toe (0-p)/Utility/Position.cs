@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TicTacToe
 {
-    struct Position
+    public struct Position
     {
         public readonly int X;
         public readonly int Y;

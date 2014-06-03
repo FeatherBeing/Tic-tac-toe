@@ -3,14 +3,14 @@ using TicTacToe.MVP;
 
 namespace TicTacToe
 {
-    enum Mark 
+    public enum Mark 
     { 
         Empty, 
         Cross, 
         Nought 
     }
 
-    class Cell
+    public class Cell
     {
         public delegate void CellChangedHandler(Cell cell);
 

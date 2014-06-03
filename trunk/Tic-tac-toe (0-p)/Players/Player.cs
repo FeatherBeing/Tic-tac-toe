@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TicTacToe
 {
-    class Player
+    public class Player
     {
         public readonly Mark mark;
         public int Score { get; set; }

@@ -16,7 +16,7 @@ namespace TicTacToe
         Horizontal, Vertical, Diagonal, Diagonal2
     }
 
-    class Grid
+    public class Grid
     {
         const int MAX_CELLS = 3;
         public readonly Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];

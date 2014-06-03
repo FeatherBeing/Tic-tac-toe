@@ -12,7 +12,7 @@ namespace TicTacToe.MVP
     /// GamePresenter interface will control the flow of the game, by manipulating the model(Cell/Grid) and 
     /// formatting the data so it is presentable to the viewer(GameForm).
     /// </summary>
-    interface IGamePresenter
+    public interface IGamePresenter
     {
         Grid Grid { get; }
         Player[] Players { get; }

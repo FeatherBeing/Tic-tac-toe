@@ -8,9 +8,9 @@ using TicTacToe.MVP;
 namespace TicTacToe
 {
     public delegate void GameEndHandler(Outcome outcome);
-    internal delegate void PlayedEventHandler(Player player);
+    public delegate void PlayedEventHandler(Player player);
 
-    class GameController : IGamePresenter 
+    public class GameController : IGamePresenter 
     {
 
         public Player[] Players { get; private set; }
