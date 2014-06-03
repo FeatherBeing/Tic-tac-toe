@@ -11,19 +11,26 @@ namespace TicTacToe
         None = -1, CrossWin, NoughtWin, Draw
     }
 
-    public enum Win
+    public enum Axis
     {
-        HorizontalWin, VerticalWin, DiagonalWin
+        Horizontal, Vertical, Diagonal, Diagonal2
     }
 
     class Grid
     {
         const int MAX_CELLS = 3;
         public readonly Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
-        public Outcome Outcome { get; private set; }        
+        public Outcome Outcome { get; private set; }      
+        public readonly Position[] Corners;
+        public readonly Position Middle;
+        private readonly IGamePresenter controller;
 
         public Grid(IGamePresenter presenter, IGameViewer viewer)
         {
+            this.controller = presenter;
+            this.Outcome = Outcome.None;
+            Cell.CellChanged += CheckOutcome;
+
             for (int x = 0; x < MAX_CELLS; x++)
             {
                 for (int y = 0; y < MAX_CELLS; y++)
@@ -31,32 +38,61 @@ namespace TicTacToe
                     cells[x, y] = new Cell(presenter, viewer, new Position(x, y));
                 }
             }
+
+            Corners = new Position[] 
+            {
+               this.cells[this.cells.GetLowerBound(0), this.cells.GetLowerBound(0)].Position, 
+               this.cells[this.cells.GetUpperBound(0), 0].Position, 
+               this.cells[0, this.cells.GetUpperBound(0)].Position, 
+               this.cells[this.cells.GetUpperBound(0), this.cells.GetUpperBound(0)].Position 
+            };
+
+            Middle = this.cells[(this.cells.GetLength(0) - 1) / 2, (this.cells.GetLength(0) - 1) / 2].Position;
         }
 
-        public bool HasWinner(Position position, Player player)
+        public void CheckOutcome(Cell cell)
         {
-            //Check for player wins first
-            var corners = new Position[] { new Position(0,0), new Position(2,0), new Position(0,2), new Position(2,2) };
-            var middle = new Position(1,1);
-            //If the cell is at the corner or the middle we have to check for diagonal wins too
-            var checkDiagonals = corners.Any(e => e == position) || middle == position;
-          
-            if (player.PlayerWon(cells[position.X, position.Y], this, checkDiagonals))
-            {
-                Outcome = (player.mark == Mark.Cross) ? Outcome.CrossWin : Outcome.NoughtWin;
-                return true;
-            }
+            var player = this.controller.Players.First(p => p.mark == cell.Mark);
 
-            //Now we can check for draws
-            if (cells.Cast<Cell>().Where(cell => cell.Mark == Mark.Empty).Count() == 0)
+            if (player.PlayerWon(cell, this, true))
+            {
+                this.Outcome = (player.mark == Mark.Cross) ? Outcome.CrossWin : Outcome.NoughtWin;
+            }
+            else if (cells.Cast<Cell>().Where(entry => entry.Mark == Mark.Empty).Count() == 0)
             {
                 Outcome = Outcome.Draw;
-                return true;
+            }
+        }
+
+        public void Reset()
+        {
+            this.Outcome = Outcome.None;
+            this.cells.Cast<Cell>().ToList().ForEach(cell => cell.Reset());
+        }
+
+        public Position FindInAxis(Cell cell, Axis axis, Predicate<Cell> selector)
+        {
+            // Start by identifying the axis so we know how to search.
+            var selection = new Cell[3];
+
+            switch (axis)
+            {
+                case Axis.Horizontal:
+                    selection = this.HorizontalRelatives(cell);
+                    break;
+                case Axis.Vertical:
+                    selection = this.VerticalRelatives(cell);
+                    break;
+                case Axis.Diagonal:
+                    selection = this.DiagonalRelatives(cell);
+                    break;
+                case Axis.Diagonal2:
+                    selection = this.DiagonalRelatives2(cell);
+                    break;
             }
 
-            //If execution reaches this point then no one has won, return false
-            return false;
-        }
+            return selection.FirstOrDefault(entry => selector.Invoke(entry)).Position;
+        } 
 
         public List<Cell[]> GetEmptyLines()
         {

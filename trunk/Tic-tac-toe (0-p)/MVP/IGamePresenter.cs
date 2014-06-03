@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicTacToe;
+using TicTacToe.AI;
 
 namespace TicTacToe.MVP
 {
@@ -15,6 +16,8 @@ namespace TicTacToe.MVP
     {
         Grid Grid { get; }
         Player[] Players { get; }
+        Player HumanPlayer { get; }
+        AIPlayer AIPlayer { get; }
         void RestartGame();
         void PlayerChoice(Player player, Position coords);
         event GameEndHandler GameEnd;

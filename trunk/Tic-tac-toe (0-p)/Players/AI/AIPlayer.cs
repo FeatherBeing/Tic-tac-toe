@@ -21,7 +21,7 @@ namespace TicTacToe.AI
             presenter.GameEnd += new GameEndHandler(delegate { AllowPlay = false; }); // Disable play for AI after game has been won
         }
 
-        private void DoTurn(Cell cell, Player player)
+        private void DoTurn(Player player)
         {
             //This check is necessary, otherwise we'll cause an infinite loop
             if (player is AIPlayer || !AllowPlay) 

@@ -27,7 +27,7 @@ namespace TicTacToe
             } 
             set 
             {
-                // Only allow changes to cells without a _mark 
+                // Only allow changes to cells without a mark 
                 if (_mark == Mark.Empty) 
                 {    
                     _mark = value;
@@ -53,6 +53,11 @@ namespace TicTacToe
         {
             _mark = Mark.Empty;
             viewer.ResetCell(this);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", this.Position.ToString(), this._mark.ToString());
         }
     }
 }

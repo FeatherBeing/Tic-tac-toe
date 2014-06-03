@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
 using TicTacToe.MVP;
+using TicTacToe.AI;
 
 namespace TicTacToe
 {
@@ -35,7 +36,7 @@ namespace TicTacToe
         private void OnClick(Object sender, EventArgs e)
         {
             // Viewer -> Presenter, when btn is clicked call PlayerChoice();
-            presenter.PlayerChoice(presenter.Players.First(player => player.mark == Mark.Cross), (sender as VisualCell).CellPosition); 
+            presenter.PlayerChoice(presenter.HumanPlayer, (sender as VisualCell).CellPosition); 
         }
     }
 }

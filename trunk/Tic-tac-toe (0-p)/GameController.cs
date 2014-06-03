@@ -8,7 +8,7 @@ using TicTacToe.MVP;
 namespace TicTacToe
 {
     public delegate void GameEndHandler(Outcome outcome);
-    internal delegate void PlayedEventHandler(Cell cell, Player player);
+    internal delegate void PlayedEventHandler(Player player);
 
     class GameController : IGamePresenter 
     {
@@ -17,40 +17,51 @@ namespace TicTacToe
         public event GameEndHandler GameEnd;
         public event PlayedEventHandler Played;
         public Grid Grid { get; private set; }
+        public Player HumanPlayer { get; private set; }
+        public AIPlayer AIPlayer { get; private set; }
 
         public GameController(IGameViewer viewer) 
         { 
             Grid = new Grid(this, viewer);
             Players = new Player[2];
-            Players[0] = new Player(Mark.Cross); // Always set to human 
-            Players[1] = new AIPlayer(Mark.Nought, this); // Set to AI            
+            Players[0] = new AIPlayer(Mark.Cross, this); 
+            Players[1] = new Player(Mark.Nought);
+            HumanPlayer = Players.First(player => !(player is AIPlayer));
+            AIPlayer = (AIPlayer)Players.First(player => player is AIPlayer);
+
+            // If the AI is set to cross then we must initialize him through the constructor.
+            if (AIPlayer.mark == Mark.Cross) 
+            {
+                AIPlayer.AllowPlay = true;
+                Played(null);
+            }
         }
 
         void IGamePresenter.PlayerChoice(Player player, Position position) 
         {
             //This is so the AI can start playing again when a new round is started
-            (Players[1] as AIPlayer).AllowPlay = true;
+            AIPlayer.AllowPlay = true;
 
             // Presenter -> Model, place _mark at position
             Grid.cells[position.X, position.Y].Mark = player.mark;
 
             // Model -> Presenter, if grid reaches an outcome end the game
-            if (Grid.HasWinner(position, player)) 
+            if (Grid.Outcome != Outcome.None) 
             { 
                 GameEnd(Grid.Outcome); 
             }
 
             //Raise Played Event
-            Played(Grid.cells[position.X, position.Y], player);  
+            Played(player);  
         }
 
         void IGamePresenter.RestartGame() 
         {
             // Reset grid
-            Grid.cells.Cast<Cell>().ToList().ForEach(cell => cell.Reset());
+            Grid.Reset();
 
             // Reset AIPlayer
-            (Players[1] as AIPlayer).Reset();
+            AIPlayer.Reset();
         }
     }
 }
