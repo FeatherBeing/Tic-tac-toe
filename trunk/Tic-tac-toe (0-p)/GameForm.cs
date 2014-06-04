@@ -18,7 +18,6 @@ namespace TicTacToe
 
         private void Game_Load(object sender, EventArgs e)
         {
-            Cell.CellChanged += (this as IGameViewer).CellChanged;
             presenter = new GameController(this);
             presenter.GameEnd += ShowCompletionDialog; // When IGamePresenter raises GameEnd event then the viewer is free to show completion dialog
         }

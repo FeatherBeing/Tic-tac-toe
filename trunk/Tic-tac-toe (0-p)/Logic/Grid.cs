@@ -18,7 +18,7 @@ namespace TicTacToe
 
     public class Grid
     {
-        const int MAX_CELLS = 3;
+        public const int MAX_CELLS = 3;
         public readonly Cell[,] cells = new Cell[MAX_CELLS, MAX_CELLS];
         public Outcome Outcome { get; private set; }      
         public readonly Position[] Corners;
@@ -73,32 +73,48 @@ namespace TicTacToe
         public Position FindInAxis(Cell cell, Axis axis, Predicate<Cell> selector)
         {
             // Start by identifying the axis so we know how to search.
-            var selection = new Cell[3];
+            var selection = new List<Cell>();
 
-            switch (axis)
+            for (int i = 0; i < MAX_CELLS; i++)
             {
-                case Axis.Horizontal:
-                    selection = this.HorizontalRelatives(cell);
-                    break;
-                case Axis.Vertical:
-                    selection = this.VerticalRelatives(cell);
-                    break;
-                case Axis.Diagonal:
-                    selection = this.DiagonalRelatives(cell);
-                    break;
-                case Axis.Diagonal2:
-                    selection = this.DiagonalRelatives2(cell);
-                    break;
+                switch (axis)
+                {
+                    case Axis.Horizontal:
+                        if (selector.Invoke(this.cells[i, cell.Position.Y]))
+                        {
+                            return this.cells[i, cell.Position.Y].Position;
+                        }
+                        break;
+                    case Axis.Vertical:
+                        if (selector.Invoke(this.cells[cell.Position.X, i]))
+                        {
+                            return this.cells[cell.Position.X, i].Position;
+                        }
+                        break;
+                    case Axis.Diagonal:
+                        if (selector.Invoke(this.cells[i, i]))
+                        {
+                            return this.cells[i, i].Position;
+                        }
+                        break;
+                    case Axis.Diagonal2:
+                        if (selector.Invoke(this.cells[i, 2 - i]))
+                        {
+                            return this.cells[i, 2 - i].Position;
+                        }
+                        break;
+                }
             }
 
-            return selection.FirstOrDefault(entry => selector.Invoke(entry)).Position;
-        } 
-
+            // Return an empty position if we can't find any cell that matches the predicate conditions.
+            return Position.Empty;
+        }
+ 
         public List<Cell[]> GetEmptyLines()
         {
             var selection = new List<Cell[]>();
 
-            for (int i = 0; i < this.cells.GetLength(0); i++)
+            for (int i = 0; i < MAX_CELLS; i++)
             {
                 var rows = new List<Cell[]>() { this.HorizontalRelatives(cells[i, i]), this.VerticalRelatives(cells[i, i]) };
 
@@ -118,7 +134,7 @@ namespace TicTacToe
         {
             var relatives = new List<Cell>();
 
-            for (int x = 0; x < 3; x++)
+            for (int x = 0; x < MAX_CELLS; x++)
             {
                 if (cells[x, x].Mark == cell.Mark) 
                 { 
@@ -133,7 +149,7 @@ namespace TicTacToe
         {
             var relatives = new List<Cell>();
 
-            for (int x = 0; x < 3; x++)
+            for (int x = 0; x < MAX_CELLS; x++)
             {
                 if (cells[x, 2 - x].Mark == cell.Mark) { relatives.Add(cells[x, 2 - x]); }
             }
@@ -146,7 +162,7 @@ namespace TicTacToe
             var relatives = new List<Cell>();
             int rowNum = cell.Position.Y;
 
-            for (int x = 0; x < 3; x++)
+            for (int x = 0; x < MAX_CELLS; x++)
             {
                 //Find row of cell
                 if (cells[x, rowNum].Mark == cell.Mark) { relatives.Add(cells[x, rowNum]); }
@@ -160,7 +176,7 @@ namespace TicTacToe
             var relatives = new List<Cell>();
             int colNum = cell.Position.X;
 
-            for (int y = 0; y < 3; y++)
+            for (int y = 0; y < MAX_CELLS; y++)
             {
                 //Find row of cell
                 if (cells[colNum, y].Mark == cell.Mark) { relatives.Add(cells[colNum, y]); }

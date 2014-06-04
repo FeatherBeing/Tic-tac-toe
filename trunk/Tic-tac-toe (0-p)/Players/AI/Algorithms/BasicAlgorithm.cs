@@ -111,52 +111,38 @@ namespace TicTacToe.AI
             {
                 var options = new List<Decision>();
                 var priorityFunc = new Func<int, int>(cells => (cells > 1) ? 3 : 1);
+                var emptyCell = new Predicate<Cell>(cell => cell.Mark == Mark.Empty);
 
                 foreach (var cell in friendlyCells)
                 {
-                    var horizontalNeighbours = grid.HorizontalRelatives(cell);
-                    var verticalNeighbours = grid.VerticalRelatives(cell);
-                    var diagonalNeighbours = grid.DiagonalRelatives(cell);
-                    var diagonalNeighbours2 = grid.DiagonalRelatives2(cell);
-
                     //Now check if a win can be achieved in Y-axis
                     if (horizontalWin.Contains(cell.Position.Y))
                     {
-                        // Okay since horizontal wins are OK at this point then just find the cell and add it to the list
-                        // The priority is calculated as if (number of neighbours == 2) then priority = 3 else priority = 1.
-                        options.Add(new Decision(priorityFunc(horizontalNeighbours.Length), grid.cells.Cast<Cell>().First(
-                            (entry) => 
-                                entry.Position.Y == cell.Position.Y && 
-                                entry.Mark == Mark.Empty)
-                                .Position)); 
+                        options.Add(new Decision(
+                            priorityFunc(grid.HorizontalRelatives(cell).Length), grid.FindInAxis(cell, Axis.Horizontal, emptyCell))); 
                     }
 
                     //Same thing here but X-axis instead
                     if (verticalWin.Contains(cell.Position.X))
                     {
-                        options.Add(new Decision(priorityFunc(verticalNeighbours.Length), grid.cells.Cast<Cell>().First(
-                            (entry) =>
-                                entry.Position.X == cell.Position.X &&
-                                entry.Mark == Mark.Empty)
-                                .Position)); 
+                        options.Add(new Decision(
+                            priorityFunc(grid.VerticalRelatives(cell).Length), grid.FindInAxis(cell, Axis.Vertical, emptyCell))); 
                     }
 
-                    if (diagonalWin && corners.Any(pos => pos == cell.Position) || diagonalWin && cell.Position == grid.Middle) //Only check for diagonal wins if cell is in a corner
+                    if (grid.Corners.Any(pos => pos == cell.Position) || cell.Position == grid.Middle)
                     {
-                        options.Add(new Decision(priorityFunc(diagonalNeighbours.Length), grid.cells.Cast<Cell>().First(
-                            (entry) => 
-                                corners.Any(position => position == entry.Position && entry.Mark == Mark.Empty || 
-                                entry.Position == grid.Middle) && entry.Mark == Mark.Empty)
-                                .Position));
-                    }
+                        //Only check for diagonal wins if cell is in a corner
+                        if (diagonalWin)
+                        {
+                            options.Add(new Decision(
+                                priorityFunc(grid.DiagonalRelatives(cell).Length), grid.FindInAxis(cell, Axis.Diagonal, emptyCell)));
+                        }
 
-                    if (diagonalWin2 && corners2.Any(pos => pos == cell.Position) || diagonalWin2 && cell.Position == grid.Middle) 
-                    {
-                        options.Add(new Decision(priorityFunc(diagonalNeighbours2.Length), grid.cells.Cast<Cell>().First(
-                            (entry) =>
-                                corners2.Any(position => position == entry.Position && entry.Mark == Mark.Empty ||
-                                entry.Position == grid.Middle && entry.Mark == Mark.Empty))
-                                .Position));
+                        if (diagonalWin2)
+                        {
+                            options.Add(new Decision(
+                                priorityFunc(grid.DiagonalRelatives2(cell).Length), grid.FindInAxis(cell, Axis.Diagonal2, emptyCell)));
+                        }
                     }
                 }
 

@@ -21,11 +21,12 @@ namespace TicTacToe
         public AIPlayer AIPlayer { get; private set; }
 
         public GameController(IGameViewer viewer) 
-        { 
+        {
+            Cell.CellChanged += viewer.CellChanged;
             Grid = new Grid(this, viewer);
             Players = new Player[2];
-            Players[0] = new AIPlayer(Mark.Cross, this); 
-            Players[1] = new Player(Mark.Nought);
+            Players[0] = new Player(Mark.Cross);
+            Players[1] = new AIPlayer(Mark.Nought, this); 
             HumanPlayer = Players.First(player => !(player is AIPlayer));
             AIPlayer = (AIPlayer)Players.First(player => player is AIPlayer);
 
